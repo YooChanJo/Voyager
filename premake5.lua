@@ -84,7 +84,7 @@ project "Voyager"
         --     buildoptions { "-O2", "-static-libgcc", "-static-libstdc++" }
         filter "configurations:Release"
             buildoptions {
-                "-O2",                   -- Maximum optimization
+                "-O3",                   -- Maximum optimization
                 -- "--flto",           -- Link Time Optimization
                 "-finline-functions",    -- Force inlining
                 "-ffast-math",           -- Relaxed floating-point rules (faster but less precise)

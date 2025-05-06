@@ -55,11 +55,11 @@ namespace Voyager {
         static void HandleEvents(); // never block waiting, just wait for a small moment for blocking busy waiting
 
         template<API T>
-        static Scope<Window> Create(const WindowProps& props = WindowProps());
+        static Ref<Window> Create(const WindowProps& props = WindowProps());
     };
     template<>
     void Window::HandleEvents<API::OpenGL>();
 
     template<>
-    Scope<Window> Window::Create<API::OpenGL>(const WindowProps& props);
+    Ref<Window> Window::Create<API::OpenGL>(const WindowProps& props);
 }

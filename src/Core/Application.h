@@ -35,7 +35,7 @@ namespace Voyager {
 
     struct WindowRegistryElement
     {
-        Scope<Window> Window;
+        Ref<Window> Window;
         bool RemoveFlag = false;
     };
 
@@ -56,7 +56,7 @@ namespace Voyager {
     protected:
         virtual bool OnWindowClose(WindowCloseEvent& e);
         // virtual bool OnWindowResize(WindowResizeEvent& e);
-        void RunWindow(Window* window);
+        void RunWindow(Ref<Window> window);
     private:
         void OnEvent(Event& e);
     private:

@@ -54,7 +54,7 @@ namespace Voyager {
         }
     }
 
-    void Application::RunWindow(Window* window) {
+    void Application::RunWindow(Ref<Window> window) {
         window->BeforeLoop();
         while(!window->IsClosed()) {
             window->BeginFrame();
@@ -70,11 +70,11 @@ namespace Voyager {
             window->EndFrame();
         }
         window->AfterLoop();
-        /* Destroying window */
+        /* Flagging window */
         {
             std::scoped_lock<std::mutex> lock(s_AppCloseMutex); // lock the mutex for thread safety
             for (auto it = m_WindowRegistry.begin(); it != m_WindowRegistry.end(); ++it) {
-                if ((it->Window.get()) == window) {
+                if ((it->Window) == window) {
                     it->RemoveFlag = true;           // Flag the register element for removal
                     break;                           // stop after first match
                 }
@@ -85,7 +85,8 @@ namespace Voyager {
     void Application::Run() {
         // run the app loop for each window in the registry
         for (auto& element : m_WindowRegistry) {
-            std::thread thread([this, &element]() { RunWindow(element.Window.get()); }); // create a thread for each window
+            Ref<Window> window = element.Window;
+            std::thread thread(RunWindow, window); // create a thread for each window
             thread.detach(); // detach the thread to run independently
         }
         while (m_WindowRegistry.size() > 0) {
@@ -100,6 +101,7 @@ namespace Voyager {
                     break;
                 }
             }
+            /* Destroying Window and Erasing it */
             {
                 std::scoped_lock<std::mutex> lock(s_AppCloseMutex); // lock the mutex for thread safety
                 for (auto it = m_WindowRegistry.begin(); it != m_WindowRegistry.end(); ) {

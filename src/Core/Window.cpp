@@ -24,14 +24,14 @@ namespace Voyager {
     }
     
     template<API T>
-    Scope<Window> Window::Create(const WindowProps& props) {
+    Ref<Window> Window::Create(const WindowProps& props) {
         /* Invalid api */
         static_assert(false, "Unsupported API type to create Window");
         return nullptr;
     }
 
     template<>
-    Scope<Window> Window::Create<API::OpenGL>(const WindowProps& props) {
+    Ref<Window> Window::Create<API::OpenGL>(const WindowProps& props) {
         return CreateScope<OpenGLWindow>(props);
     }
 
