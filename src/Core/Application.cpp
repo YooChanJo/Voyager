@@ -86,7 +86,7 @@ namespace Voyager {
         // run the app loop for each window in the registry
         for (auto& element : m_WindowRegistry) {
             Ref<Window> window = element.Window;
-            std::thread thread(RunWindow, window); // create a thread for each window
+            std::thread thread(RunWindow, this, window); // create a thread for each window
             thread.detach(); // detach the thread to run independently
         }
         while (m_WindowRegistry.size() > 0) {
