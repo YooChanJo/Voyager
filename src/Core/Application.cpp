@@ -54,7 +54,7 @@ namespace Voyager {
         }
     }
 
-    void Application::RunWindow(Ref<Window> window) {
+    [[noinline]] void Application::RunWindow(Ref<Window> window) {
         window->BeforeLoop();
         while(!window->IsClosed()) {
             window->BeginFrame();
@@ -86,8 +86,10 @@ namespace Voyager {
         // run the app loop for each window in the registry
         for (auto& element : m_WindowRegistry) {
             Ref<Window> window = element.Window;
-            std::thread thread(RunWindow, this, window); // create a thread for each window
-            thread.detach(); // detach the thread to run independently
+            std::thread thread([this, window]() {
+                RunWindow(window);
+            });
+            thread.detach();            
         }
         while (m_WindowRegistry.size() > 0) {
             /* Handle Events per Loop */

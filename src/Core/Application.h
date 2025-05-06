@@ -56,7 +56,7 @@ namespace Voyager {
     protected:
         virtual bool OnWindowClose(WindowCloseEvent& e);
         // virtual bool OnWindowResize(WindowResizeEvent& e);
-        void RunWindow(Ref<Window> window);
+        [[noinline]] void RunWindow(Ref<Window> window);
     private:
         void OnEvent(Event& e);
     private:
