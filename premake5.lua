@@ -84,12 +84,12 @@ project "Voyager"
         --     buildoptions { "-O2", "-static-libgcc", "-static-libstdc++" }
         filter "configurations:Release"
             buildoptions {
-                "-O3",                   -- Maximum optimization
+                "-O2",                   -- Maximum optimization
                 -- "--flto",           -- Link Time Optimization
                 "-finline-functions",    -- Force inlining
                 "-ffast-math",           -- Relaxed floating-point rules (faster but less precise)
                 "-march=native",         -- Optimize for your CPU
                 "-static-libgcc",        -- Link libgcc statically
-                "-static-libstdc++"      -- Link libstdc++ statically
+                "-static-libstdc++",      -- Link libstdc++ statically
             }
             
