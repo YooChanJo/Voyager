@@ -27,6 +27,7 @@ namespace Voyager {
     Scope<Window> Window::Create(const WindowProps& props) {
         /* Invalid api */
         static_assert(false, "Unsupported API type to create Window");
+        return nullptr;
     }
 
     template<>
