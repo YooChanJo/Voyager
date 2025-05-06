@@ -76,7 +76,6 @@ namespace Voyager {
             for (auto it = m_WindowRegistry.begin(); it != m_WindowRegistry.end(); ++it) {
                 if ((it->Window.get()) == window) {
                     it->RemoveFlag = true;           // Flag the register element for removal
-                    std::cout << "Flagged" << std::endl;;
                     break;                           // stop after first match
                 }
             }
@@ -105,9 +104,7 @@ namespace Voyager {
                 std::scoped_lock<std::mutex> lock(s_AppCloseMutex); // lock the mutex for thread safety
                 for (auto it = m_WindowRegistry.begin(); it != m_WindowRegistry.end(); ) {
                     if (it->RemoveFlag) {
-                        std::cout << "Erased Begin" << std::endl;;
                         it = m_WindowRegistry.erase(it); // erase returns next valid iterator
-                        std::cout << "Erased" << std::endl;;
                     } else {
                         ++it;
                     }

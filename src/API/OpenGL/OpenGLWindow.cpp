@@ -45,14 +45,11 @@ namespace Voyager {
     }
     
     void OpenGLWindow::ShutDown() const {
-        std::cout << "Called" << std::endl;;
-        // glfwDestroyWindow causes deadlock --> Needs to be debugged
-        // get hold of navigation bar then close calls error
+        std::cout << "Destroying window " << m_Window << std::endl;
         glfwDestroyWindow(m_Window);     // destroys window
-        std::cout << "Destroyed window" << std::endl;
+        std::cout << "Destroyed " << m_Window << std::endl;
         {
             std::scoped_lock<std::mutex> lock(s_WindowMutex);
-            std::cout << "Hello" << std::endl;
             // thread safety
             s_WindowCount--; // decrement window count
             if(s_WindowCount == 0) {
@@ -61,7 +58,6 @@ namespace Voyager {
                 s_GladInitialized = false; // reset s_GladInitialized
             }
         }
-        std::cout << "Released" << std::endl;
     }
 
     bool OpenGLWindow::Init() {
