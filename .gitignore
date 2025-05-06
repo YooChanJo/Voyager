@@ -1,0 +1,10 @@
+*.bat
+*.exe
+*.o
+*.d
+.lib
+.dll
+
+
+bin/
+bin-int/
