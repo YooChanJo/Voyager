@@ -24,11 +24,11 @@ namespace Voyager {
 
     class Renderer2D {
     protected:
-        OpenGLWindow* m_Window;
+        // OpenGLWindow* m_Window;
         std::vector<glm::mat4> m_TransformationStack;
         const glm::mat4* m_TransformationBack; // cache for debug non inlining
     protected:
-        Renderer2D(OpenGLWindow& window);
+        Renderer2D(/* OpenGLWindow& window */);
         virtual ~Renderer2D() = default;
     public:
 

@@ -7,8 +7,8 @@
 
 namespace Voyager {
 
-    BatchRenderer2D::BatchRenderer2D(OpenGLWindow& window)
-        : Renderer2D(window)
+    BatchRenderer2D::BatchRenderer2D(/* OpenGLWindow& window */)
+        // : Renderer2D(window)
     {
         bool success = Init();
         VG_CORE_ASSERT(success, "Failed to create and initialize BatchRenderer2D");

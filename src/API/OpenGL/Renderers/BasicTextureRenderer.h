@@ -10,7 +10,7 @@ namespace Voyager {
     private:
         OpenGLTexture* m_Texture;
     public:
-        BasicTextureRenderer(OpenGLWindow& window);
+        BasicTextureRenderer(/* OpenGLWindow& window */);
         ~BasicTextureRenderer();
 
         void AddTexture(OpenGLTexture& texture, const std::string& name, int slot = 0);

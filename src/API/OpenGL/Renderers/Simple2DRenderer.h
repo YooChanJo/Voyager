@@ -13,7 +13,7 @@ namespace Voyager {
         std::deque<Renderable2D*> m_RenderQueue;
         OpenGLShader m_Shader;
     public:
-        Simple2DRenderer(OpenGLWindow& window);
+        Simple2DRenderer(/* OpenGLWindow& window */);
         ~Simple2DRenderer();
 
         bool Init();

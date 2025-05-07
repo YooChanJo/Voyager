@@ -10,7 +10,7 @@ namespace Voyager {
         return layout;
     }
 
-    Renderer2D::Renderer2D(OpenGLWindow& window): m_Window(&window) {
+    Renderer2D::Renderer2D(/* OpenGLWindow& window */)/* : m_Window(&window) */ {
         // m_TransformationStack.reserve(10); // reserve space for 10 matrices
         m_TransformationStack.push_back(glm::mat4(1.0f)); // identity matrix
         m_TransformationBack = &m_TransformationStack.back();

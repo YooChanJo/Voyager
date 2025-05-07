@@ -2,7 +2,7 @@
 
 namespace Voyager {
 
-    BasicTextureRenderer::BasicTextureRenderer(OpenGLWindow& window): BasicRenderer(window) {}
+    BasicTextureRenderer::BasicTextureRenderer(/* OpenGLWindow& window */)/* : BasicRenderer(window) */ {}
     BasicTextureRenderer::~BasicTextureRenderer() {}
 
     void BasicTextureRenderer::AddTexture(OpenGLTexture& texture, const std::string& name, int slot) {

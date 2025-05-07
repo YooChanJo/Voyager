@@ -14,7 +14,39 @@ public:
     }
 
     void OnAttach() override {
-        
+        BatchRenderer2D renderer_batch(windowBatch);
+
+    renderer_batch.ProvideShader("C:/Users/Owner/Desktop/project/Voyager/shaders/batch.shader");
+    renderer_batch.GetShader().Bind();
+    renderer_batch.GetShader().SetUniform1f("u_WindowHeight", (float)windowBatch.GetHeight());
+    
+    srand(time(NULL));
+
+    std::vector<Sprite*> sprites;
+#define TEST_50K_SPRITES 0
+#if TEST_50K_SPRITES
+    for(float y = 0; y < 9.0f; y += 0.05f) {
+        for(float x = 0; x < 16.0f; x += 0.05f) {
+            sprites.push_back(new Sprite(x, y, 0.04f, 0.04f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 1)));
+        }
+    }
+#else    
+    for(float y = 0; y < 9.0f; y += 1.0f) {
+        for(float x = 0; x < 16.0f; x += 1.0f) {
+            sprites.push_back(new Sprite(x, y, 0.9f, 0.9f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 0.5)));
+        }
+    }
+    windowBatch.EnableBlending();
+#endif
+    glm::mat4 mvp = glm::ortho(0.0f, 16.0f, 0.0f, 9.0f);
+
+    renderer_batch.GetShader().SetUniformMat4f("u_MVP", mvp);
+
+    windowBatch.SetEventCallback([&renderer_batch, &windowBatch](Event& e){
+        EventDispatcher dispatcher(e);
+        windowBatch.MakeWindowContextCurrent();
+
+    });
     }
 
     void OnUpdate() override {
@@ -25,6 +57,13 @@ public:
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<MouseMovedEvent>([this](MouseMovedEvent& event) {
             VG_CORE_INFO("Mouse moved to: {0}, {1}", event.GetX(), event.GetY());
+            renderer_batch.GetShader().Bind();
+            renderer_batch.GetShader().SetUniform2f("u_MousePos", event.GetX(), event.GetY());
+            return true;
+        });
+        dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& event) {
+            renderer_batch.GetShader().Bind();
+            renderer_batch.GetShader().SetUniform1f("u_WindowHeight", (float)event.GetHeight());
             return true;
         });
     }

@@ -2,7 +2,7 @@
 
 namespace Voyager {
     
-    BasicRenderer::BasicRenderer(OpenGLWindow& window): m_Window(&window) {
+    BasicRenderer::BasicRenderer(/* OpenGLWindow& window */)/* : m_Window(&window) */ {
     }
     BasicRenderer::~BasicRenderer() {}
 

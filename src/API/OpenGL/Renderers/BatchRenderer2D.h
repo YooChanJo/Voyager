@@ -27,7 +27,7 @@ namespace Voyager {
 
 
     public:
-        BatchRenderer2D(OpenGLWindow& window);
+        BatchRenderer2D(/* OpenGLWindow& window */);
         ~BatchRenderer2D();
 
         void ProvideShader(const std::string& filepath);

@@ -178,6 +178,8 @@ namespace Voyager {
             MouseMovedEvent event(data.WindowPtr, (float)xPos, (float)yPos);
             data.EventCallback(event); // calling the callback function 
         });
+
+        glfwMakeContextCurrent(nullptr); // unbind for memory issues
         return true;
     }
     void OpenGLWindow::SetTitle(const std::string& title) {

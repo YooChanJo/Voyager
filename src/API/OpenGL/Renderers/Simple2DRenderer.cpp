@@ -5,7 +5,7 @@
 
 namespace Voyager {
     
-    Simple2DRenderer::Simple2DRenderer(OpenGLWindow& window): Renderer2D(window) {
+    Simple2DRenderer::Simple2DRenderer(/* OpenGLWindow& window */)/* : Renderer2D(window) */ {
         bool success = Init();
         VG_CORE_ASSERT(success, "Failed to create and initialize Simple2DRenderer");
     }

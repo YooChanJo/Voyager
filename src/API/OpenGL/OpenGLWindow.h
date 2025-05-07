@@ -31,7 +31,7 @@ namespace Voyager {
         virtual ~OpenGLWindow();
 
         // LEGACY Remove make context
-        inline void MakeContextCurrent() const { glfwMakeContextCurrent(m_Window); } // make the window context current
+        // inline void MakeContextCurrent() const { glfwMakeContextCurrent(m_Window); } // make the window context current
 
         /* Override functions */
         inline std::string GetTitle() const override { return m_Data.Title; }

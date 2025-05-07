@@ -20,7 +20,7 @@ namespace Voyager {
         OpenGLShader* m_Shader;
         
     public:
-        BasicRenderer(OpenGLWindow& window);
+        BasicRenderer(/* OpenGLWindow& window */);
         ~BasicRenderer();
         
         void AddVertexArray(OpenGLVertexArray& vao);
