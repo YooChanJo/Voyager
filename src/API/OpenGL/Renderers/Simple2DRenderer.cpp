@@ -29,7 +29,6 @@ namespace Voyager {
             "    fragColor = vec4(v_Color);\n"
             "}\n"
         };
-        m_Window->MakeWindowContextCurrent();
         m_Shader = OpenGLShader(source); // default shader
         m_Shader.Generate();
         m_Shader.Bind();
@@ -39,22 +38,18 @@ namespace Voyager {
 
     void Simple2DRenderer::ProvideShader(const std::string& filepath) {
         m_Shader = OpenGLShader(filepath);
-        m_Window->MakeWindowContextCurrent();
         m_Shader.Generate();
     }
     void Simple2DRenderer::ProvideShader(const ShaderProgramSource& source) {
         m_Shader = OpenGLShader(source);
-        m_Window->MakeWindowContextCurrent();
         m_Shader.Generate();
     }
 
     void Simple2DRenderer::Submit(Renderable2D* renderable) {
-        if(m_Window->IsClosed()) return;
         m_RenderQueue.push_back(renderable);
     }
 
     void Simple2DRenderer::Flush() {
-        if(m_Window->IsClosed()) return;
         while (!m_RenderQueue.empty()) {
             Renderable2D* renderable = m_RenderQueue[0];
             OpenGLVertexArray vao;

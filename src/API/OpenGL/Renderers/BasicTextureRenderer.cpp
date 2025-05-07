@@ -6,7 +6,6 @@ namespace Voyager {
     BasicTextureRenderer::~BasicTextureRenderer() {}
 
     void BasicTextureRenderer::AddTexture(OpenGLTexture& texture, const std::string& name, int slot) {
-        m_Window->MakeWindowContextCurrent();
         m_Shader->Bind();
         texture.Generate();
         m_Shader->SetUniform1i("u_Texture_" + name, slot);

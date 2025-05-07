@@ -62,7 +62,6 @@ namespace Voyager {
         };
         m_Shader = OpenGLShader(source); // default shader
 
-        m_Window->MakeWindowContextCurrent();
         m_VertexArray->Generate();
         m_VertexBuffer->Generate();
         m_VertexBuffer->BindBufferData();
@@ -81,22 +80,18 @@ namespace Voyager {
 
     void BatchRenderer2D::ProvideShader(const std::string& filepath) {
         m_Shader = OpenGLShader(filepath);
-        m_Window->MakeWindowContextCurrent();
         m_Shader.Generate();
     }
     void BatchRenderer2D::ProvideShader(const ShaderProgramSource& source) {
         m_Shader = OpenGLShader(source);
-        m_Window->MakeWindowContextCurrent();
         m_Shader.Generate();
     }
 
     void BatchRenderer2D::Begin() {
-        if(m_Window->IsClosed()) return;
         m_VertexArray->Bind();
         m_Buffer = (VertexData*)m_VertexBuffer->MapBuffer(OpenGLBufferAccess::WriteOnly); // map buffer to write data
     }
     void BatchRenderer2D::Submit(Renderable2D* renderable) {
-        if(m_Window->IsClosed()) return;
         const auto& position = renderable->GetPosition();
         const auto& size = renderable->GetSize();
         const auto& color = renderable->GetColor();
@@ -130,13 +125,11 @@ namespace Voyager {
         m_IndexCount += 6; // 6 indices per quad
     }
     void BatchRenderer2D::End() {
-        if(m_Window->IsClosed()) return;
         m_VertexArray->Bind();
         m_VertexBuffer->UnmapBuffer();
     }
 
     void BatchRenderer2D::Flush() {
-        if(m_Window->IsClosed()) return;
         m_VertexArray->Bind();
         m_IndexBuffer->Bind();
 

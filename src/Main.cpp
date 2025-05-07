@@ -3,8 +3,35 @@
 #include "Core/EntryPoint.h"
 
 using namespace Voyager;
-class TestApplication : public Application {
 
+class TestLayer : public Layer {
+public:
+    TestLayer() : Layer("Test Layer") {
+        VG_CORE_INFO("TestLayer created!");
+    }
+    ~TestLayer() {
+        VG_CORE_INFO("TestLayer destroyed!");
+    }
+
+    void OnAttach() override {
+        
+    }
+
+    void OnUpdate() override {
+        // VG_CORE_INFO("TestLayer updated!");
+    }
+
+    void OnEvent(Event& e) override {
+        EventDispatcher dispatcher(e);
+        dispatcher.Dispatch<MouseMovedEvent>([this](MouseMovedEvent& event) {
+            VG_CORE_INFO("Mouse moved to: {0}, {1}", event.GetX(), event.GetY());
+            return true;
+        });
+    }
+};
+
+
+class TestApplication : public Application {
 public:
     TestApplication()
         : Application(GraphicsAPI::OpenGL)
@@ -13,6 +40,7 @@ public:
         AddWindow(WindowProps("Test Application Window 2"));
 
         Ref<Window> window1 = GetWindow(0);
+        window1->PushLayer(CreateRef<TestLayer>());
     }
     virtual ~TestApplication() {
 
