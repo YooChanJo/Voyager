@@ -4,7 +4,6 @@
 #include <Glad/glad.h>
 #include <GLFW/glfw3.h>
 
-
 #include "Events/Event.h"
 #include "Core/Window.h"
 

@@ -1,9 +1,8 @@
 #pragma once
 
 #include "BasicRenderer.h"
-
 #include "API/OpenGL/OpenGLTexture.h"
-#include "API/OpenGL/OpenGLWindow.h"
+
 
 namespace Voyager {
 

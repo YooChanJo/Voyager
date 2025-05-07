@@ -1,5 +1,3 @@
-// OpenGL
-
 #include "BasicTextureRenderer.h"
 
 namespace Voyager {

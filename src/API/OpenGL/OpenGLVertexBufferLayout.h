@@ -1,8 +1,6 @@
 #pragma once
-
-#include <Glad/glad.h>
-
 #include "pch.h"
+#include <Glad/glad.h>
 
 namespace Voyager {
     struct OpenGLVertexBufferElement {

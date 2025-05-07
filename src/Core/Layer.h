@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Events/Event.h"
 #include "Base.h"
+#include "Events/Event.h"
 
 namespace Voyager {
     class Layer {

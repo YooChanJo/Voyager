@@ -1,5 +1,4 @@
 #include "Renderer2D.h"
-
 #include "Core/Log.h"
 
 namespace Voyager {

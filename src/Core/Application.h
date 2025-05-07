@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 
 #include "Events/Event.h"
 #include "Events/ApplicationEvent.h"
@@ -8,7 +9,6 @@
 #include "Base.h"
 #include "Assert.h"
 
-#include "pch.h"
 
 // Might TODO: running more than one instance of app and more than one window per app
 

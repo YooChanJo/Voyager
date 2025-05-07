@@ -1,9 +1,9 @@
 #include "BatchRenderer2D.h"
+#include "API/OpenGL/OpenGLBufferEnum.h"
 
 #include "Core/Assert.h"
 #include "Core/Log.h"
 
-#include "API/OpenGL/OpenGLBufferEnum.h"
 
 namespace Voyager {
 

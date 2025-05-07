@@ -1,4 +1,3 @@
-
 #include "LayerStack.h"
 
 namespace Voyager {

@@ -1,12 +1,10 @@
 #pragma once
-
 #include "pch.h"
 
 #include "Base.h"
 #include "Events/Event.h"
 #include "Layer.h"
 #include "LayerStack.h"
-
 #include "MapAPI.h"
 
 namespace Voyager {

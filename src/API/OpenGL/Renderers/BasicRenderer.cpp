@@ -1,5 +1,3 @@
-// OpenGL
-
 #include "BasicRenderer.h"
 
 namespace Voyager {

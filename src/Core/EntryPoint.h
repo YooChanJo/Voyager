@@ -1,6 +1,6 @@
 #pragma once
-#include "Core/Log.h"
-#include "Core/Application.h"
+#include "Log.h"
+#include "Application.h"
 
 // extern Voyager::Application* Voyager::CreateApplication(Voyager::ApplicationCommandLineArgs args);
 

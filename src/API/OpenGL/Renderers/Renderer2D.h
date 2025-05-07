@@ -1,13 +1,16 @@
 #pragma once
+#include "pch.h"
 
 #include "API/OpenGL/OpenGLWindow.h"
 #include "API/OpenGL/OpenGLVertexBufferLayout.h"
 #include "API/OpenGL/OpenGLVertexArray.h"
 #include "API/OpenGL/OpenGLVertexBuffer.h"
 #include "API/OpenGL/OpenGLIndexBuffer.h"
+#include "API/OpenGL/OpenGLShader.h"
+
 #include "Graphics/Renderable2D.h"
 
-#include "pch.h"
+
 
 namespace Voyager {        
     
