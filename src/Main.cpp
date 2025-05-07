@@ -9,10 +9,10 @@ public:
     TestApplication()
         : Application(GraphicsAPI::OpenGL)
     {
-        AddWindow(WindowProps("Test Application Window"));
-        AddWindow(WindowProps("Hello"));
-        AddWindow(WindowProps());
-        AddWindow(WindowProps("Hi"));
+        AddWindow(WindowProps("Test Application Window 1"));
+        AddWindow(WindowProps("Test Application Window 2"));
+
+        Ref<Window> window1 = GetWindow(0);
     }
     virtual ~TestApplication() {
 

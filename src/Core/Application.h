@@ -48,6 +48,7 @@ namespace Voyager {
 
         /* Cannot Add windows during runtime, setup all the windows at the beginning */
         void AddWindow(const WindowProps& props = WindowProps());
+        inline Ref<Window> GetWindow(unsigned int index) { return m_WindowRegistry[index].Window; } // get the window at index
         
         inline static GraphicsAPI GetAPI() { return s_API; }
         inline std::vector<WindowRegistryElement>& GetWindowRegistry() { return m_WindowRegistry; }

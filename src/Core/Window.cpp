@@ -32,7 +32,7 @@ namespace Voyager {
 
     template<>
     Ref<Window> Window::Create<API::OpenGL>(const WindowProps& props) {
-        return CreateScope<OpenGLWindow>(props);
+        return CreateRef<OpenGLWindow>(props);
     }
 
     

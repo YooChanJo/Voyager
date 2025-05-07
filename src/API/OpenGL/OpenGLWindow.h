@@ -30,9 +30,9 @@ namespace Voyager {
         OpenGLWindow(const WindowProps& props = WindowProps());
         virtual ~OpenGLWindow();
 
+        /* Util functions --> Move to RendererAPI */
         void MakeWindowContextCurrent() const;
         void SetViewport(int x, int y, int width, int height) const;
-        void SetTitle(const std::string& title);
 
         void EnableBlending() const;
         void DisableBlending() const;
@@ -47,11 +47,15 @@ namespace Voyager {
         void Clear() const;
         
         static void PollEventsAndWait(double timeout);
-        
-        inline std::string GetTitle() const { return m_Data.Title; }
-        inline int GetWidth() const { return m_Data.Width; }
-        inline int GetHeight() const { return m_Data.Height; }
 
+        /* Override functions */
+        inline std::string GetTitle() const override { return m_Data.Title; }
+        inline int GetWidth() const override { return m_Data.Width; }
+        inline int GetHeight() const override { return m_Data.Height; }
+
+        void SetTitle(const std::string& title) override;
+        void SetSize(int width, int height) override;
+    private:
         inline void* GetNativeWindow() const override { return (void*)m_Window; } // get native window pointer
 
         void BeforeLoop() override; // before the loop starts
@@ -61,7 +65,6 @@ namespace Voyager {
 
         inline bool IsClosed() const override { return m_Data.IsClosed; }
         inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
-
     private:
         bool Init();
         void ShutDown() const;

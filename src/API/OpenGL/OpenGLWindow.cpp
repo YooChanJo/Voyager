@@ -174,6 +174,11 @@ namespace Voyager {
         m_Data.Title = title;
         glfwSetWindowTitle(m_Window, title.c_str()); // set window title
     }
+    void OpenGLWindow::SetSize(int width, int height) {
+        m_Data.Width = width;
+        m_Data.Height = height; // modifies all instances of m_Data
+        glfwSetWindowSize(m_Window, width, height); // set window size
+    }
 
 
     void OpenGLWindow::SetClearColor(float r, float g, float b, float a) const {
