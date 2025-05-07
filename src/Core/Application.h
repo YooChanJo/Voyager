@@ -21,7 +21,7 @@ namespace Voyager {
 
 		const char* operator[](int index) const
 		{
-			VG_CORE_ASSERT(index < Count, "Inappropriate apllication cmd line args specification");
+			VG_CORE_ASSERT(index < Count, "Inappropriate application cmd line args specification");
 			return Args[index];
 		}
 	};
@@ -56,7 +56,7 @@ namespace Voyager {
     protected:
         virtual bool OnWindowClose(WindowCloseEvent& e);
         // virtual bool OnWindowResize(WindowResizeEvent& e);
-        [[noinline]] void RunWindow(Ref<Window> window);
+        void RunWindow(Ref<Window> window);
     private:
         void OnEvent(Event& e);
     private:

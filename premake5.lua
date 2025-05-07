@@ -91,5 +91,6 @@ project "Voyager"
                 "-march=native",         -- Optimize for your CPU
                 "-static-libgcc",        -- Link libgcc statically
                 "-static-libstdc++",      -- Link libstdc++ statically
+                "-std=c++17",
             }
             

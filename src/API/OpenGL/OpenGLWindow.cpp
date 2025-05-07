@@ -32,7 +32,8 @@ namespace Voyager {
         VG_CORE_INFO("Creating window {0} ({1}, {2})", m_Data.Title, m_Data.Width, m_Data.Height);
     
         // initialize window data first
-        VG_ASSERT(Init(), "Failed to create and initialize window {0} in class Window", m_Data.Title);
+        bool success = Init();
+        VG_ASSERT(success, "Failed to create and initialize window {0} in class Window", m_Data.Title);
         m_Data.IsClosed = false;
         {
             std::scoped_lock<std::mutex> lock(s_WindowMutex);

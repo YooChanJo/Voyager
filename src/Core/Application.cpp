@@ -54,7 +54,7 @@ namespace Voyager {
         }
     }
 
-    [[noinline]] void Application::RunWindow(Ref<Window> window) {
+    void Application::RunWindow(Ref<Window> window) {
         window->BeforeLoop();
         while(!window->IsClosed()) {
             window->BeginFrame();

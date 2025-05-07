@@ -1,9 +1,10 @@
+#include "pch.h"
+
 // OpenGL
 #include <Glad/glad.h>
 #include <GLFW/glfw3.h>
 
 // STD Headers
-#include "pch.h"
 
 #include "OpenGLShader.h"
 #include "Core/Log.h"
