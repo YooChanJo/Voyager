@@ -92,6 +92,20 @@ namespace Voyager {
                 s_GladInitialized = true;
             }
         }
+        /* Enable blending */
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        /* Enable depth test */
+		glEnable(GL_DEPTH_TEST); // enable depth test
+        glDepthFunc(GL_LESS); // depth test function
+
+        /* Enable culling face */
+        glEnable(GL_CULL_FACE); // enable culling
+        glCullFace(GL_BACK); // cull back faces
+
+        /* Enable line smooth */
+		// glEnable(GL_LINE_SMOOTH); --> Legacy
 
         /* Set default viewport */
         glViewport(0, 0, m_Data.Width, m_Data.Height); // set viewport to window size
@@ -166,10 +180,6 @@ namespace Voyager {
         });
         return true;
     }
-
-    void OpenGLWindow::SetViewport(int x, int y, int width, int height) const {
-        glViewport(x, y, width, height); // set viewport to window size
-    }
     void OpenGLWindow::SetTitle(const std::string& title) {
         m_Data.Title = title;
         glfwSetWindowTitle(m_Window, title.c_str()); // set window title
@@ -178,15 +188,6 @@ namespace Voyager {
         m_Data.Width = width;
         m_Data.Height = height; // modifies all instances of m_Data
         glfwSetWindowSize(m_Window, width, height); // set window size
-    }
-
-
-    void OpenGLWindow::SetClearColor(float r, float g, float b, float a) const {
-        glClearColor(r, g, b, a);
-    }
-
-    void OpenGLWindow::Clear() const {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     void OpenGLWindow::PollEventsAndWait(double timeout) {
@@ -201,36 +202,13 @@ namespace Voyager {
         glfwMakeContextCurrent(nullptr); // release ptr
     }
     void OpenGLWindow::BeginFrame() {
-        Clear();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
+    /* Context reliant */
     void OpenGLWindow::EndFrame() {
         glfwSwapBuffers(m_Window);
     }
 
-    void OpenGLWindow::MakeWindowContextCurrent() const {
-        glfwMakeContextCurrent(m_Window);
-    }
 
-    void OpenGLWindow::EnableBlending() const {
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // alpha rendering
-        glEnable(GL_BLEND); // enable blending
-    }
-    void OpenGLWindow::DisableBlending() const {
-        glDisable(GL_BLEND); // disable blending
-    }
-    void OpenGLWindow::EnableDepthTest() const {
-        glEnable(GL_DEPTH_TEST); // enable depth test
-        glDepthFunc(GL_LESS); // depth test function
-    }
-    void OpenGLWindow::DisableDepthTest() const {
-        glDisable(GL_DEPTH_TEST); // disable depth test 
-    }
-    void OpenGLWindow::EnableCulling() const {
-        glEnable(GL_CULL_FACE); // enable culling
-        glCullFace(GL_BACK); // cull back faces
-    }
-    void OpenGLWindow::DisableCulling() const {
-        glDisable(GL_CULL_FACE); // disable culling
-    }
     
 }

@@ -5,7 +5,7 @@
 #include "Events/Event.h"
 #include "Layer.h"
 #include "LayerStack.h"
-#include "MapAPI.h"
+#include "GraphicsAPI.h"
 
 namespace Voyager {
 
@@ -25,6 +25,8 @@ namespace Voyager {
     class Application;
     
     /* The window class handles innate properties, layer handling */
+    /* The window class does not handle rendering functions --> they are handled by the rendererapi */
+    /* Direct platform specification is held out in the application class */
     class Window {
         friend class Application;
     protected:
@@ -44,9 +46,9 @@ namespace Voyager {
     public:
         void PushLayer(Ref<Layer> layer);
         void PushOverlay(Ref<Layer> overlay);
-
         inline LayerStack& GetLayerStack() { return m_LayerStack; }
         
+        /* Defined platform(GraphicsAPI) specific */
         virtual std::string GetTitle() const = 0;
         virtual int GetWidth() const = 0;
         virtual int GetHeight() const = 0;
@@ -56,16 +58,16 @@ namespace Voyager {
         virtual void SetTitle(const std::string& title) = 0;
         virtual void SetSize(int width, int height) = 0;
 
+    public:
+        /* Static functions */
         template<API T>
         static void HandleEvents(); // never block waiting, just wait for a small moment for blocking busy waiting
 
         template<API T>
         static Ref<Window> Create(const WindowProps& props = WindowProps());
-
     };
     template<>
     void Window::HandleEvents<API::OpenGL>();
-
     template<>
     Ref<Window> Window::Create<API::OpenGL>(const WindowProps& props);
 }

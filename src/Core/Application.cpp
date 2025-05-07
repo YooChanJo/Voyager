@@ -12,8 +12,8 @@ namespace Voyager {
     Application::Application(/* const ApplicationSpecification& specification,  */GraphicsAPI api) {
         VG_CORE_ASSERT(!s_Instance, "Application already exists!");
         VG_CORE_ASSERT(api != GraphicsAPI::None, "Cannot set Application GraphicsAPI to None, must specify api");
-        s_API = api;
-		s_Instance = this;
+        RenderCommand::Init(api); // initialize the render command with the api
+        s_Instance = this;
         // m_Specification = specification;
     }
     Application::~Application() {
@@ -23,7 +23,7 @@ namespace Voyager {
     /* Cannot Add windows during runtime, setup all the windows at the beginning */
     void Application::AddWindow(const WindowProps& props) {
         // create a new window and push it to the window registry
-        switch(s_API) {
+        switch(RenderCommand::s_API) {
             case GraphicsAPI::OpenGL: {
                 std::scoped_lock<std::mutex> lock(s_AppCloseMutex); // lock the mutex for thread safety
                 m_WindowRegistry.push_back({ Window::Create<GraphicsAPI::OpenGL>(props) });
@@ -32,7 +32,7 @@ namespace Voyager {
             }
             default: {
                 VG_CORE_ASSERT(false, "Cannot create window in application with current GraphicsAPI");
-                break;
+                return;
             }
         }
     }
@@ -91,7 +91,7 @@ namespace Voyager {
         }
         while (m_WindowRegistry.size() > 0) {
             /* Handle Events per Loop */
-            switch(s_API) {
+            switch(RenderCommand::s_API) {
                 case GraphicsAPI::OpenGL: {
                     Window::HandleEvents<GraphicsAPI::OpenGL>();
                     break;

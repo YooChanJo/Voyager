@@ -30,24 +30,6 @@ namespace Voyager {
         OpenGLWindow(const WindowProps& props = WindowProps());
         virtual ~OpenGLWindow();
 
-        /* Util functions --> Move to RendererAPI */
-        void MakeWindowContextCurrent() const;
-        void SetViewport(int x, int y, int width, int height) const;
-
-        void EnableBlending() const;
-        void DisableBlending() const;
-
-        void EnableDepthTest() const;
-        void DisableDepthTest() const;
-
-        void EnableCulling() const;
-        void DisableCulling() const;
-
-        void SetClearColor(float r, float g, float b, float a) const;
-        void Clear() const;
-        
-        static void PollEventsAndWait(double timeout);
-
         /* Override functions */
         inline std::string GetTitle() const override { return m_Data.Title; }
         inline int GetWidth() const override { return m_Data.Width; }
@@ -68,6 +50,9 @@ namespace Voyager {
     private:
         bool Init();
         void ShutDown() const;
+        inline void MakeWindowContextCurrent() const { glfwMakeContextCurrent(m_Window); } // make the window context current
+        friend class Window;
+        static void PollEventsAndWait(double timeout); // Window::HandleEvents<API::OpenGL>()
     };
 
 }

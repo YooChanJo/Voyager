@@ -4,7 +4,8 @@
 #include "Events/Event.h"
 #include "Events/ApplicationEvent.h"
 #include "Window.h"
-#include "MapAPI.h"
+#include "GraphicsAPI.h"
+#include "RenderCommand.h"
 
 #include "Base.h"
 #include "Assert.h"
@@ -39,6 +40,7 @@ namespace Voyager {
         bool RemoveFlag = false;
     };
 
+    /* Windows are created to match the api of RenderCommand.h */
     class Application {
     public:
         Application(/* const ApplicationSpecification& specification,  */GraphicsAPI api);
@@ -50,7 +52,7 @@ namespace Voyager {
         void AddWindow(const WindowProps& props = WindowProps());
         inline Ref<Window> GetWindow(unsigned int index) { return m_WindowRegistry[index].Window; } // get the window at index
         
-        inline static GraphicsAPI GetAPI() { return s_API; }
+        inline static GraphicsAPI GetAPI() { return RenderCommand::s_API; }
         inline std::vector<WindowRegistryElement>& GetWindowRegistry() { return m_WindowRegistry; }
         
         inline static Application& Get() { return *s_Instance; } // get the instance of the app
@@ -62,7 +64,6 @@ namespace Voyager {
         void OnEvent(Event& e);
     private:
         inline static Application* s_Instance = nullptr;
-        inline static GraphicsAPI s_API = GraphicsAPI::None;
         
         // ApplicationSpecification m_Specification;
         std::vector<WindowRegistryElement> m_WindowRegistry; // auto memory mangement
