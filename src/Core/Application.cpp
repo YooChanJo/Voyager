@@ -45,7 +45,7 @@ namespace Voyager {
         dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
         // JK_CORE_TRACE(e);
 
-        for(auto it = e.GetWindow()->GetLayerStack().end(); it != e.GetWindow()->GetLayerStack().begin(); ) {
+        for(auto it = e.GetWindow()->m_LayerStack.end(); it != e.GetWindow()->m_LayerStack.begin(); ) {
             // handles events from back of the layer stack
             (*--it)->OnEvent(e); // Tries to handle event
             if(e.GetHandled()) break; // if the event was handled in the layer then ok
@@ -61,7 +61,7 @@ namespace Voyager {
 
             // layer handling
             {
-                for (Ref<Layer> layer : window->GetLayerStack()) layer->OnUpdate();
+                for (Scope<Layer>& layer : window->m_LayerStack) layer->OnUpdate(window.get());
             }
             // would want imgui etc over here
 

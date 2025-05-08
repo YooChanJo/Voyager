@@ -40,8 +40,9 @@ namespace Voyager {
 
         void SetTitle(const std::string& title) override;
         void SetSize(int width, int height) override;
-    private:
+    public:
         inline void* GetNativeWindow() const override { return (void*)m_Window; } // get native window pointer
+    private:
 
         void BeforeLoop() override; // before the loop starts
         void AfterLoop() override; // after the loop ends
@@ -55,7 +56,7 @@ namespace Voyager {
         void ShutDown() const;
         inline void MakeWindowContextCurrent() const { glfwMakeContextCurrent(m_Window); } // make the window context current
         friend class Window;
-        static void PollEventsAndWait(double timeout); // Window::HandleEvents<API::OpenGL>()
+        static void PollWindowEvents(); // Window::HandleEvents<API::OpenGL>()
     };
 
 }

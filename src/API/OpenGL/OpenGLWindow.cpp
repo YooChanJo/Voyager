@@ -100,9 +100,9 @@ namespace Voyager {
 		glEnable(GL_DEPTH_TEST); // enable depth test
         glDepthFunc(GL_LESS); // depth test function
 
-        /* Enable culling face */
-        glEnable(GL_CULL_FACE); // enable culling
-        glCullFace(GL_BACK); // cull back faces
+        // /* Enable culling face */
+        // glEnable(GL_CULL_FACE); // enable culling
+        // glCullFace(GL_FRONT); // cull back faces
 
         /* Enable line smooth */
 		// glEnable(GL_LINE_SMOOTH); --> Legacy
@@ -192,8 +192,8 @@ namespace Voyager {
         glfwSetWindowSize(m_Window, width, height); // set window size
     }
 
-    void OpenGLWindow::PollEventsAndWait(double timeout) {
-        glfwWaitEventsTimeout(timeout); // poll events for all windows
+    void OpenGLWindow::PollWindowEvents() {
+        glfwPollEvents(); // poll events for all windows
     }
 
     void OpenGLWindow::BeforeLoop() {

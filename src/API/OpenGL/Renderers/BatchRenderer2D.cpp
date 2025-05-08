@@ -14,12 +14,13 @@ namespace Voyager {
         VG_CORE_ASSERT(success, "Failed to create and initialize BatchRenderer2D");
     }
 
-    BatchRenderer2D::~BatchRenderer2D() {}
+    BatchRenderer2D::~BatchRenderer2D() = default;
 
     bool BatchRenderer2D::Init() {
         m_VertexArray = std::make_unique<OpenGLVertexArray>();
         m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>(nullptr, RENDERER_BUFFER_SIZE);        
         m_VertexBuffer->SetUsage(OpenGLBufferUsage::DynamicDraw);
+
 
         m_VertexBufferLayout = std::make_unique<OpenGLVertexBufferLayout>();
         m_VertexBufferLayout->Push<float>(3); // position
@@ -102,6 +103,7 @@ namespace Voyager {
         int a = color.a * 255;
 
         unsigned c = (a << 24) | (b << 16) | (g << 8) | r; // RGBA to unsigned int
+        /* Culling might not be uncompatable -- current orientation is ccw, but native OpenGL renders back face */
         glm::vec4 pos1 = (*m_TransformationBack) * glm::vec4(position, 1.0f);
         m_Buffer->position = glm::vec3(pos1.x, pos1.y, pos1.z);
         m_Buffer->color = c;
@@ -132,6 +134,26 @@ namespace Voyager {
     void BatchRenderer2D::Flush() {
         m_VertexArray->Bind();
         m_IndexBuffer->Bind();
+
+        m_Shader.Bind();
+
+        // m_VertexBuffer->Bind(); // bind the buffer data to the GPU
+
+        // GLint size;
+        // glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
+
+        // GLvoid* data = malloc(size);
+        // glGetBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, size, data);
+        // for(int i=0;i<24;i++) {
+            
+        //     std::cout << ((unsigned int*)data)[i] << ", ";
+        // }
+        // std::cout << std::endl;
+
+        // // Now you can use the data (do not forget to free it)
+        // free(data);
+        // std::cin.get();
+
 
         glDrawElements(GL_TRIANGLES, m_IndexCount, GL_UNSIGNED_INT, nullptr); // draw the elements
         m_IndexCount = 0; // reset index count for next batch

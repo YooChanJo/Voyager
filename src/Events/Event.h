@@ -7,8 +7,6 @@ namespace Voyager {
     // Currently is blocking events
     // For further improvements, use buffer events in an event bus and process them in the event stage
 
-    class Window;
-
     enum class EventType {
         None = 0,
         WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
@@ -31,7 +29,8 @@ namespace Voyager {
                                 virtual const char* GetName() const override { return #type; }
 
 #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
-
+    
+    class Window; // forward declaration of Window class
     class Event {
         friend class EventDispatcher;
     public:

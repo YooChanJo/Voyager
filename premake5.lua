@@ -40,10 +40,10 @@ project "Voyager"
         "src/**.cpp"
     }
     -- Debug purpose needs removal
-    removefiles {
-        "src/API/OpenGL/Renderers/**.h",
-        "src/API/OpenGL/Renderers/**.cpp",
-    }
+    -- removefiles {
+    --     "src/API/OpenGL/Renderers/**.h",
+    --     "src/API/OpenGL/Renderers/**.cpp",
+    -- }
 
     includedirs {
         "src",

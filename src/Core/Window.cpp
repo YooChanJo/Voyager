@@ -2,24 +2,42 @@
 #include "API/OpenGL/OpenGLWindow.h"
 
 namespace Voyager {
-
-    void Window::PushLayer(Ref<Layer> layer) {
-        m_LayerStack.PushLayer(layer);
-        layer->OnAttach();
+    Window::~Window() {
+        /* Destroying all layers */
+        for (auto it = m_LayerStack.begin(); it != m_LayerStack.end(); ++it) {
+            (*it)->OnDetach(this); // detach the layer from the window
+        }
     }
-    void Window::PushOverlay(Ref<Layer> overlay) {
-        m_LayerStack.PushOverlay(overlay);
-        overlay->OnAttach();
+
+    void Window::PushLayer(Scope<Layer>&& layer) {
+        layer->OnAttach(this);
+        m_LayerStack.PushLayer(std::move(layer));
+    }
+    void Window::PushOverlay(Scope<Layer>&& overlay) {
+        overlay->OnAttach(this);
+        m_LayerStack.PushOverlay(std::move(overlay));
+    }
+    void Window::PopLayer(unsigned int index) {
+        if (index < m_LayerStack.GetLayerInsertIndex()) {
+            (*(m_LayerStack.begin() + index))->OnDetach(this);
+            m_LayerStack.PopLayer(index);
+        }
+    }
+    void Window::PopOverLay(unsigned int index) {
+        if (index >= m_LayerStack.GetLayerInsertIndex()) {
+            (*(m_LayerStack.begin() + index))->OnDetach(this);
+            m_LayerStack.PopOverlay(index);
+        }
     }
 
     template<API T>
-    void Window::HandleEvents() {
+    void Window::PollEvents() {
         /* Invalid api */
         static_assert(false, "Unsupported API type to create Window");
     }
 
     template<>
-    void Window::HandleEvents<API::OpenGL>() {
+    void Window::PollEvents<API::OpenGL>() {
         OpenGLWindow::PollEventsAndWait(0.01); // preventing busy waiting
     }
     

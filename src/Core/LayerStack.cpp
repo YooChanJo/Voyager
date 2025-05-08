@@ -2,47 +2,36 @@
 
 namespace Voyager {
   
-    LayerStack::~LayerStack() {
-        for(Ref<Layer> layer: m_Layers) {
-            layer->OnDetach();
+    LayerStack::~LayerStack() = default;
+
+    void LayerStack::PushLayer(Scope<Layer>&& layer) {
+        m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, std::move(layer));
+        m_LayerInsertIndex++;
+    }
+    void LayerStack::PushOverlay(Scope<Layer>&& overlay) {
+        m_Layers.emplace_back(std::move(overlay));
+    }
+    void LayerStack::PopLayer(unsigned int index) {
+        if(m_Layers.size() == 0) return; // no layers to pop
+        if (index < m_LayerInsertIndex) {
+            m_Layers.erase(this->begin() + index);
+            m_LayerInsertIndex--;
+        }
+    }
+    void LayerStack::PopOverlay(unsigned int index) {
+        if(m_Layers.size() == 0) return; // no layers to pop
+        if (index >= m_LayerInsertIndex) {
+            m_Layers.erase(m_Layers.begin() + index);
         }
     }
 
-    void LayerStack::PushLayer(Ref<Layer> layer) {
-        m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
-		    m_LayerInsertIndex++;
-    }
-    void LayerStack::PushOverlay(Ref<Layer> overlay) {
-        m_Layers.emplace_back(overlay);
-    }
-    void LayerStack::PopLayer(Ref<Layer> layer) {
-        auto it = m_Layers.end(); // Default to end if not found
-        for (auto iter = m_Layers.begin(); iter != m_Layers.begin() + m_LayerInsertIndex; ++iter) {
-            if (*iter == layer) {
-                it = iter; // Found the match
-                break; // Exit the loop once a match is found
+    std::vector<Scope<Layer>>::iterator LayerStack::Find(const std::string& name) {
+        for (auto it = m_Layers.begin(); it != m_Layers.end(); ++it) {
+            if ((*it)->GetName() == name) {
+                return it; // Return the first match iterator to the found layer
             }
         }
-        if (it != m_Layers.begin() + m_LayerInsertIndex)
-        {
-          layer->OnDetach();
-          m_Layers.erase(it);
-          m_LayerInsertIndex--;
-        }
-    }
-    void LayerStack::PopOverlay(Ref<Layer> overlay) {
-        auto it = m_Layers.end(); // Default to end if not found
-        for (auto iter = m_Layers.begin() + m_LayerInsertIndex; iter != m_Layers.end(); ++iter) {
-            if (*iter == overlay) {
-                it = iter; // Found the match
-                break; // Exit the loop once a match is found
-            }
-        }
-        if (it != m_Layers.end())
-        {
-          overlay->OnDetach();
-          m_Layers.erase(it);
-        }
+        return m_Layers.end(); // Return end iterator if not found
     }
 
 }

@@ -53,7 +53,7 @@ namespace Voyager {
         inline Ref<Window> GetWindow(unsigned int index) { return m_WindowRegistry[index].Window; } // get the window at index
         
         inline static GraphicsAPI GetAPI() { return RenderCommand::s_API; }
-        inline std::vector<WindowRegistryElement>& GetWindowRegistry() { return m_WindowRegistry; }
+        inline const std::vector<WindowRegistryElement>& GetWindowRegistry() const { return m_WindowRegistry; }
         
         inline static Application& Get() { return *s_Instance; } // get the instance of the app
     protected:

@@ -4,71 +4,92 @@
 
 using namespace Voyager;
 
+#include "API/OpenGL/Renderers/BatchRenderer2D.h"
+#include "Graphics/Sprite.h"
 class TestLayer : public Layer {
+private:
+    Scope<BatchRenderer2D> batchRenderer;
+    std::vector<Sprite*> sprites;
 public:
     TestLayer() : Layer("Test Layer") {
         VG_CORE_INFO("TestLayer created!");
     }
     ~TestLayer() {
         VG_CORE_INFO("TestLayer destroyed!");
+        for(auto sprite : sprites) {
+            delete sprite;
+        }
     }
 
-    void OnAttach() override {
-        BatchRenderer2D renderer_batch(windowBatch);
+    void OnAttach(Window* window) override {
+        glfwMakeContextCurrent((GLFWwindow*)(window->GetNativeWindow())); // main thread --> impossible
+        std::cout << (GLFWwindow*)(window->GetNativeWindow()) << std::endl;
+        batchRenderer = CreateScope<BatchRenderer2D>();
+        // batchRenderer->ProvideShader("C:/Users/Owner/Desktop/project/Voyager/shaders/batch.shader");
+        // batchRenderer->GetShader().Bind();
+        // batchRenderer->GetShader().SetUniform1f("u_WindowHeight", (float)window->GetHeight());
+        srand(time(NULL));
 
-    renderer_batch.ProvideShader("C:/Users/Owner/Desktop/project/Voyager/shaders/batch.shader");
-    renderer_batch.GetShader().Bind();
-    renderer_batch.GetShader().SetUniform1f("u_WindowHeight", (float)windowBatch.GetHeight());
-    
-    srand(time(NULL));
-
-    std::vector<Sprite*> sprites;
 #define TEST_50K_SPRITES 0
 #if TEST_50K_SPRITES
-    for(float y = 0; y < 9.0f; y += 0.05f) {
-        for(float x = 0; x < 16.0f; x += 0.05f) {
-            sprites.push_back(new Sprite(x, y, 0.04f, 0.04f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 1)));
+        for(float y = 0; y < 9.0f; y += 0.05f) {
+            for(float x = 0; x < 16.0f; x += 0.05f) {
+                sprites.push_back(new Sprite(x, y, 0.04f, 0.04f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 1)));
+            }
         }
-    }
 #else    
-    for(float y = 0; y < 9.0f; y += 1.0f) {
-        for(float x = 0; x < 16.0f; x += 1.0f) {
-            sprites.push_back(new Sprite(x, y, 0.9f, 0.9f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 0.5)));
+        for(float y = 0; y < 9.0f; y += 1.0f) {
+            for(float x = 0; x < 16.0f; x += 1.0f) {
+                sprites.push_back(new Sprite(x, y, 0.9f, 0.9f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 0.5)));
+            }
         }
-    }
-    windowBatch.EnableBlending();
 #endif
-    glm::mat4 mvp = glm::ortho(0.0f, 16.0f, 0.0f, 9.0f);
+        glm::mat4 mvp = glm::ortho(0.0f, 16.0f, 0.0f, 9.0f);
 
-    renderer_batch.GetShader().SetUniformMat4f("u_MVP", mvp);
-
-    windowBatch.SetEventCallback([&renderer_batch, &windowBatch](Event& e){
-        EventDispatcher dispatcher(e);
-        windowBatch.MakeWindowContextCurrent();
-
-    });
+        batchRenderer->GetShader().SetUniformMat4f("u_MVP", mvp);
+        glfwMakeContextCurrent(nullptr);
     }
 
-    void OnUpdate() override {
-        // VG_CORE_INFO("TestLayer updated!");
+    void OnUpdate(Window* window) override {
+        batchRenderer->Begin();
+        int i = 0;
+        for(auto sprite : sprites) {
+            // if(i++ % 2 == 0) batchRenderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(2.5, 0, 0)));
+            // else batchRenderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.5, 0)));
+            batchRenderer->Submit(sprite);
+            // batchRenderer->Pop();
+        }
+        batchRenderer->End();
+        batchRenderer->Flush();
     }
+
+    Scope<BatchRenderer2D>& GetBatchRenderer() {
+        return batchRenderer;
+    }
+
 
     void OnEvent(Event& e) override {
-        EventDispatcher dispatcher(e);
-        dispatcher.Dispatch<MouseMovedEvent>([this](MouseMovedEvent& event) {
-            VG_CORE_INFO("Mouse moved to: {0}, {1}", event.GetX(), event.GetY());
-            renderer_batch.GetShader().Bind();
-            renderer_batch.GetShader().SetUniform2f("u_MousePos", event.GetX(), event.GetY());
-            return true;
-        });
-        dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& event) {
-            renderer_batch.GetShader().Bind();
-            renderer_batch.GetShader().SetUniform1f("u_WindowHeight", (float)event.GetHeight());
-            return true;
-        });
+        // EventDispatcher dispatcher(e);
+        // OpenGLShader& shader = batchRenderer->GetShader();
+        // dispatcher.Dispatch<MouseMovedEvent>([&shader](MouseMovedEvent& event) {
+        //     // VG_CORE_INFO("Mouse moved to: {0}, {1}", event.GetX(), event.GetY());
+        //     std::cout << (GLFWwindow*)(event.GetWindow()->GetNativeWindow()) << std::endl;
+        //     glfwMakeContextCurrent((GLFWwindow*)(event.GetWindow()->GetNativeWindow()));
+        //     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        //     shader.Bind();
+        //     shader.SetUniform2f("u_MousePos", event.GetX(), event.GetY());
+        //     glfwMakeContextCurrent(nullptr);
+        //     return true;
+        // });
+        // dispatcher.Dispatch<WindowResizeEvent>([&shader](WindowResizeEvent& event) {
+        //     glfwMakeContextCurrent((GLFWwindow*)(event.GetWindow()->GetNativeWindow()));
+        //     shader.Bind();
+        //     shader.SetUniform1f("u_WindowHeight", (float)event.GetHeight());
+        //     glfwMakeContextCurrent(nullptr);
+        //     return true;
+        // });
     }
 };
-
 
 class TestApplication : public Application {
 public:
@@ -79,7 +100,7 @@ public:
         AddWindow(WindowProps("Test Application Window 2"));
 
         Ref<Window> window1 = GetWindow(0);
-        window1->PushLayer(CreateRef<TestLayer>());
+        window1->PushLayer(CreateScope<TestLayer>());
     }
     virtual ~TestApplication() {
 
