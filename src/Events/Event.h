@@ -29,16 +29,16 @@ namespace Voyager {
                                 virtual const char* GetName() const override { return #type; }
 
 #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
-    
+    /* Event being virtual creates error in event buffering */
     class Window; // forward declaration of Window class
     class Event {
         friend class EventDispatcher;
     public:
         Event(Window* window) : m_Window(window) {}
-        virtual EventType GetEventType() const = 0;
-        virtual const char* GetName() const = 0;
-        virtual int GetCategoryFlags() const = 0;
-        virtual std::string ToString() const { return GetName(); };
+        inline virtual EventType GetEventType() const { return EventType::None; }
+        inline virtual const char* GetName() const { return "None Event"; }
+        inline virtual int GetCategoryFlags() const { return EventCategory::None; }
+        inline virtual std::string ToString() const { return GetName(); };
         
         inline bool IsInCategory(EventCategory category) const {
             return GetCategoryFlags() & category;

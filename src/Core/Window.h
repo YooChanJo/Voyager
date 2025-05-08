@@ -7,6 +7,8 @@
 #include "LayerStack.h"
 #include "GraphicsAPI.h"
 
+#include <mutex>
+
 namespace Voyager {
 
     struct WindowProps
@@ -29,21 +31,23 @@ namespace Voyager {
     /* Direct platform specification is held out in the application class */
     class Window {
         friend class Application;
-    protected:
-        LayerStack m_LayerStack;
-    public: // back to private
-        virtual void* GetNativeWindow() const = 0;    
     public:
         using EventCallbackFn = std::function<void(Event&)>;
-        virtual ~Window();
+        using EventQueue = std::queue<Event>;
+    private:
+        LayerStack m_LayerStack;
+        EventQueue m_EventQueue;
+        
     public:
+        virtual ~Window();
+
         void PushLayer(Scope<Layer>&& layer);
         void PushOverlay(Scope<Layer>&& overlay);
         void PopLayer(unsigned int index);
         void PopOverLay(unsigned int index);
         inline std::vector<Scope<Layer>>::iterator Find(const std::string& name) { return m_LayerStack.Find(name); } // find layer by name
         inline const LayerStack& GetLayerStack() const { return m_LayerStack; }
-        
+    
         /* Defined platform(GraphicsAPI) specific */
         virtual std::string GetTitle() const = 0;
         virtual int GetWidth() const = 0;
@@ -61,10 +65,12 @@ namespace Voyager {
         
         virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
         virtual bool IsClosed() const = 0;
+    public: // back to private --> remove this line both from here and api
+        virtual void* GetNativeWindow() const = 0;   
     public:
         /* Static functions */
         template<API T>
-        static void PollEvents(); // never block waiting, just wait for a small moment for blocking busy waiting
+        static void PollEvents();
 
         template<API T>
         static Ref<Window> Create(const WindowProps& props = WindowProps());

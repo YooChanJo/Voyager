@@ -1,8 +1,6 @@
 #include "LayerStack.h"
 
 namespace Voyager {
-  
-    LayerStack::~LayerStack() = default;
 
     void LayerStack::PushLayer(Scope<Layer>&& layer) {
         m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, std::move(layer));

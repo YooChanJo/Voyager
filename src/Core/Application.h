@@ -10,6 +10,9 @@
 #include "Base.h"
 #include "Assert.h"
 
+#include <thread>
+#include <mutex>
+
 
 // Might TODO: running more than one instance of app and more than one window per app
 
@@ -67,6 +70,13 @@ namespace Voyager {
         
         // ApplicationSpecification m_Specification;
         std::vector<WindowRegistryElement> m_WindowRegistry; // auto memory mangement
+        /* Only the thread of window and the main thread access these mutex --> Called independently alone to prevent deadlock */
+        /* Locks the window event queue */
+        std::unordered_map<Window*, Scope<std::mutex>> m_WindowEventMutexMap; // event mutex for each window
+
+        /* Mutex lock order */
+        std::mutex m_WindowRegistryMutex;
+        std::mutex m_WindowEventMutexMapMutex;
     };
 
     // to be defined in CLIENT

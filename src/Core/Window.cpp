@@ -38,7 +38,7 @@ namespace Voyager {
 
     template<>
     void Window::PollEvents<API::OpenGL>() {
-        OpenGLWindow::PollEventsAndWait(0.01); // preventing busy waiting
+        OpenGLWindow::PollWindowEvents(); // preventing busy waiting
     }
     
     template<API T>

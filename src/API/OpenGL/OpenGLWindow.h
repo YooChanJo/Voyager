@@ -8,7 +8,7 @@
 #include "Core/Window.h"
 
 namespace Voyager {
-    
+    /* Creating and deletion only on main thread */
     /* Does not automatically handle context current */
     class OpenGLWindow: public Window {
     private:

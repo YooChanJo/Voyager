@@ -1,13 +1,7 @@
 #include "Application.h"
 
-#include <thread>
-#include <mutex>
-
 namespace Voyager {
 #define BIND_EVENT_FN(Func) std::bind(&Application::Func, this, std::placeholders::_1)
-
-   
-    static std::mutex s_AppCloseMutex; // mutex for thread safety
     
     Application::Application(/* const ApplicationSpecification& specification,  */GraphicsAPI api) {
         VG_CORE_ASSERT(!s_Instance, "Application already exists!");
@@ -25,9 +19,12 @@ namespace Voyager {
         // create a new window and push it to the window registry
         switch(RenderCommand::s_API) {
             case GraphicsAPI::OpenGL: {
-                std::scoped_lock<std::mutex> lock(s_AppCloseMutex); // lock the mutex for thread safety
+                std::scoped_lock<std::mutex> lock1(m_WindowRegistryMutex); // lock the mutex for thread safety
+                std::scoped_lock<std::mutex> lock2(m_WindowEventMutexMapMutex);
+
                 m_WindowRegistry.push_back({ Window::Create<GraphicsAPI::OpenGL>(props) });
                 m_WindowRegistry.back().Window->SetEventCallback(BIND_EVENT_FN(OnEvent)); // set event callback for the new window
+                m_WindowEventMutexMap[m_WindowRegistry.back().Window.get()] = CreateScope<std::mutex>(); // requires cleanup;
                 break;   
             }
             default: {
@@ -38,18 +35,9 @@ namespace Voyager {
     }
 
     void Application::OnEvent(Event& e) {
-        // possible want to buffer events at this point and handle them at the event section of the loop
-        EventDispatcher dispatcher(e);
-
-        // we call event handling functions bool<Event&> and call dispatch
-        dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-        // JK_CORE_TRACE(e);
-
-        for(auto it = e.GetWindow()->m_LayerStack.end(); it != e.GetWindow()->m_LayerStack.begin(); ) {
-            // handles events from back of the layer stack
-            (*--it)->OnEvent(e); // Tries to handle event
-            if(e.GetHandled()) break; // if the event was handled in the layer then ok
-        }
+        /* Adding events to corresponding window event buffer(queue) */
+        std::scoped_lock<std::mutex> lock(*(m_WindowEventMutexMap[e.GetWindow()].get()));
+        e.GetWindow()->m_EventQueue.push(e);
     }
 
     void Application::RunWindow(Ref<Window> window) {
@@ -66,16 +54,32 @@ namespace Voyager {
             // would want imgui etc over here
 
             window->EndFrame();
+
+            /* Handle Buffered Events */
+            {
+                std::scoped_lock<std::mutex> lock(*(m_WindowEventMutexMap[window.get()].get()));
+                // possible want to buffer events at this point and handle them at the event section of the loop
+                while(!window->m_EventQueue.empty()) {
+                    auto& e = window->m_EventQueue.front();
+                    EventDispatcher dispatcher(e);
+                    dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
+    
+                    for(auto it = window->m_LayerStack.end(); it != window->m_LayerStack.begin(); ) {
+                        // handles events from back of the layer stack
+                        (*--it)->OnEvent(e); // Tries to handle event
+                        if(e.GetHandled()) break; // if the event was handled in the layer then ok
+                    }
+                    window->m_EventQueue.pop();
+                }
+            }
         }
         window->AfterLoop();
         /* Flagging window */
-        {
-            std::scoped_lock<std::mutex> lock(s_AppCloseMutex); // lock the mutex for thread safety
-            for (auto it = m_WindowRegistry.begin(); it != m_WindowRegistry.end(); ++it) {
-                if ((it->Window) == window) {
-                    it->RemoveFlag = true;           // Flag the register element for removal
-                    break;                           // stop after first match
-                }
+        std::scoped_lock<std::mutex> lock(m_WindowRegistryMutex); // lock the mutex for thread safety
+        for (auto it = m_WindowRegistry.begin(); it != m_WindowRegistry.end(); ++it) {
+            if ((it->Window) == window) {
+                it->RemoveFlag = true;           // Flag the register element for removal
+                break;                           // stop after first match
             }
         }
     }
@@ -93,7 +97,7 @@ namespace Voyager {
             /* Handle Events per Loop */
             switch(RenderCommand::s_API) {
                 case GraphicsAPI::OpenGL: {
-                    Window::HandleEvents<GraphicsAPI::OpenGL>();
+                    Window::PollEvents<GraphicsAPI::OpenGL>();
                     break;
                 }
                 default: {
@@ -103,15 +107,21 @@ namespace Voyager {
             }
             /* Destroying Window and Erasing it */
             {
-                std::scoped_lock<std::mutex> lock(s_AppCloseMutex); // lock the mutex for thread safety
+                std::scoped_lock<std::mutex> lock1(m_WindowRegistryMutex);
+                std::scoped_lock<std::mutex> lock2(m_WindowEventMutexMapMutex);
                 for (auto it = m_WindowRegistry.begin(); it != m_WindowRegistry.end(); ) {
                     if (it->RemoveFlag) {
+                        /* Child thread is destroyed --> delete mutex */
+                        m_WindowEventMutexMap.erase(it->Window.get());
+                        /* Delete window */
                         it = m_WindowRegistry.erase(it); // erase returns next valid iterator
                     } else {
                         ++it;
                     }
                 }
             }
+            /* 100 times per second might need adjustments */
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
     }
 

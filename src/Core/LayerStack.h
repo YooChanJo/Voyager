@@ -9,7 +9,7 @@ namespace Voyager {
     class LayerStack {
     public:
         LayerStack() = default;
-        ~LayerStack();
+        ~LayerStack() = default;
 
         void PushLayer(Scope<Layer>&& layer); // inserts layers from front(place m_LayerInsert)
         void PushOverlay(Scope<Layer>&& overlay); // inserts overlays from back;

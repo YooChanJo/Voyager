@@ -54,10 +54,10 @@ public:
         batchRenderer->Begin();
         int i = 0;
         for(auto sprite : sprites) {
-            // if(i++ % 2 == 0) batchRenderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(2.5, 0, 0)));
-            // else batchRenderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.5, 0)));
+            if(i++ % 2 == 0) batchRenderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(2.5, 0, 0)));
+            else batchRenderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.5, 0)));
             batchRenderer->Submit(sprite);
-            // batchRenderer->Pop();
+            batchRenderer->Pop();
         }
         batchRenderer->End();
         batchRenderer->Flush();
@@ -69,25 +69,20 @@ public:
 
 
     void OnEvent(Event& e) override {
-        // EventDispatcher dispatcher(e);
-        // OpenGLShader& shader = batchRenderer->GetShader();
-        // dispatcher.Dispatch<MouseMovedEvent>([&shader](MouseMovedEvent& event) {
-        //     // VG_CORE_INFO("Mouse moved to: {0}, {1}", event.GetX(), event.GetY());
-        //     std::cout << (GLFWwindow*)(event.GetWindow()->GetNativeWindow()) << std::endl;
-        //     glfwMakeContextCurrent((GLFWwindow*)(event.GetWindow()->GetNativeWindow()));
-        //     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        //     shader.Bind();
-        //     shader.SetUniform2f("u_MousePos", event.GetX(), event.GetY());
-        //     glfwMakeContextCurrent(nullptr);
-        //     return true;
-        // });
-        // dispatcher.Dispatch<WindowResizeEvent>([&shader](WindowResizeEvent& event) {
-        //     glfwMakeContextCurrent((GLFWwindow*)(event.GetWindow()->GetNativeWindow()));
-        //     shader.Bind();
-        //     shader.SetUniform1f("u_WindowHeight", (float)event.GetHeight());
-        //     glfwMakeContextCurrent(nullptr);
-        //     return true;
-        // });
+        EventDispatcher dispatcher(e);
+        OpenGLShader& shader = batchRenderer->GetShader();
+        dispatcher.Dispatch<MouseMovedEvent>([&shader](MouseMovedEvent& event) {
+            VG_CORE_INFO("Mouse moved to: {0}, {1}", event.GetX(), event.GetY());
+            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            // shader.Bind();
+            // shader.SetUniform2f("u_MousePos", event.GetX(), event.GetY());
+            return true;
+        });
+        dispatcher.Dispatch<WindowResizeEvent>([&shader](WindowResizeEvent& event) {
+            // shader.Bind();
+            // shader.SetUniform1f("u_WindowHeight", (float)event.GetHeight());
+            return true;
+        });
     }
 };
 
@@ -97,7 +92,7 @@ public:
         : Application(GraphicsAPI::OpenGL)
     {
         AddWindow(WindowProps("Test Application Window 1"));
-        AddWindow(WindowProps("Test Application Window 2"));
+        // AddWindow(WindowProps("Test Application Window 2"));
 
         Ref<Window> window1 = GetWindow(0);
         window1->PushLayer(CreateScope<TestLayer>());

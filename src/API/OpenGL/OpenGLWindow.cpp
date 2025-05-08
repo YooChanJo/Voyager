@@ -7,11 +7,8 @@
 #include "Core/Assert.h"
 #include "Core/Log.h"
 
-#include <mutex>
-
 namespace Voyager {
 
-    static std::mutex s_WindowMutex; // mutex for thread safety, constrolls static variables
     static bool s_GLFWInitialized = false;
     static bool s_GladInitialized = false;
     static short s_WindowCount = 0; // number of windows created
@@ -34,10 +31,7 @@ namespace Voyager {
         bool success = Init();
         VG_ASSERT(success, "Failed to create and initialize window {0} in class Window", m_Data.Title);
         m_Data.IsClosed = false;
-        {
-            std::scoped_lock<std::mutex> lock(s_WindowMutex);
-            s_WindowCount++; // increment window count
-        }
+        s_WindowCount++; // increment window count
     }
     
     OpenGLWindow::~OpenGLWindow() { 
@@ -49,7 +43,6 @@ namespace Voyager {
         glfwDestroyWindow(m_Window);     // destroys window
         std::cout << "Destroyed " << m_Window << std::endl;
         {
-            std::scoped_lock<std::mutex> lock(s_WindowMutex);
             // thread safety
             s_WindowCount--; // decrement window count
             if(s_WindowCount == 0) {
@@ -63,7 +56,6 @@ namespace Voyager {
     bool OpenGLWindow::Init() {
         /* GLFW initialization */
         {
-            std::scoped_lock<std::mutex> lock(s_WindowMutex);
             if(!s_GLFWInitialized) {
                 int success = glfwInit();
                 VG_CORE_ASSERT(success, "Could not initialize GLFW!");
@@ -85,7 +77,6 @@ namespace Voyager {
 
         /* Glad initialization */
         {
-            std::scoped_lock<std::mutex> lock(s_WindowMutex);
             if(!s_GladInitialized) {
                 int success = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
                 VG_CORE_ASSERT(success, "Failed to initialize glad");
