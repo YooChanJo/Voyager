@@ -68,17 +68,17 @@ public:
     }
 
 
-    void OnEvent(Event& e) override {
+    void OnEvent(const EventPtr& e) override {
         EventDispatcher dispatcher(e);
         OpenGLShader& shader = batchRenderer->GetShader();
-        dispatcher.Dispatch<MouseMovedEvent>([&shader](MouseMovedEvent& event) {
-            VG_CORE_INFO("Mouse moved to: {0}, {1}", event.GetX(), event.GetY());
+        dispatcher.Dispatch<MouseMovedEvent>([&shader](const Ref<MouseMovedEvent>& event) {
+            VG_CORE_INFO("Mouse moved to: {0}, {1}", event->GetX(), event->GetY());
             glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
             // shader.Bind();
             // shader.SetUniform2f("u_MousePos", event.GetX(), event.GetY());
             return true;
         });
-        dispatcher.Dispatch<WindowResizeEvent>([&shader](WindowResizeEvent& event) {
+        dispatcher.Dispatch<WindowResizeEvent>([&shader](const Ref<WindowResizeEvent>& event) {
             // shader.Bind();
             // shader.SetUniform1f("u_WindowHeight", (float)event.GetHeight());
             return true;

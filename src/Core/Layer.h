@@ -15,7 +15,7 @@ namespace Voyager {
         virtual void OnUpdate(Window* window) {}
         
         /* event.GetWindow() would return pointer to window */
-        virtual void OnEvent(Event& event) {}
+        virtual void OnEvent(const EventPtr& event) {}
 
         inline const std::string& GetName() const { return m_Name; }
 

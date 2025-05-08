@@ -1,5 +1,6 @@
 #pragma once
 #include "pch.h"
+#include "Core/Base.h"
 
 #define BIT(x) (1 << (x))
 
@@ -35,9 +36,9 @@ namespace Voyager {
         friend class EventDispatcher;
     public:
         Event(Window* window) : m_Window(window) {}
-        inline virtual EventType GetEventType() const { return EventType::None; }
-        inline virtual const char* GetName() const { return "None Event"; }
-        inline virtual int GetCategoryFlags() const { return EventCategory::None; }
+        inline virtual EventType GetEventType() const = 0;
+        inline virtual const char* GetName() const = 0;
+        inline virtual int GetCategoryFlags() const = 0;
         inline virtual std::string ToString() const { return GetName(); };
         
         inline bool IsInCategory(EventCategory category) const {
@@ -51,25 +52,26 @@ namespace Voyager {
         Window* m_Window; // pointer to the window that created the event
     };
 
+    using EventPtr = Ref<Event>; // pointer to the event object
     template <typename T> // T is the type of an Event
-    using EventDispatchFn = std::function<bool(T&)>;
+    using EventDispatchFn = std::function<bool(const Ref<T>&)>;
     class EventDispatcher // called in each layer each onEvent(EventCallbackFn) to dispatch events
 	{
 	public:
-		EventDispatcher(Event& event): m_Event(event) {}
+		EventDispatcher(const EventPtr& event): m_Event(event) {}
 		
 		template<typename T>
 		bool Dispatch(const EventDispatchFn<T>& func)
 		{
-			if (m_Event.GetEventType() == T::GetStaticType())
+			if (m_Event->GetEventType() == T::GetStaticType())
 			{
-				m_Event.m_Handled = func(static_cast<T&>(m_Event));
+				m_Event->m_Handled = func(std::dynamic_pointer_cast<T>(m_Event));
 				return true;
 			}
 			return false;
 		}
 	private:
-		Event& m_Event;
+		EventPtr m_Event;
 	};
 
 	inline std::ostream& operator<<(std::ostream& os, const Event& e) {

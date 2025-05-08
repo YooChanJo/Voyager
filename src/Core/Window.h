@@ -32,11 +32,12 @@ namespace Voyager {
     class Window {
         friend class Application;
     public:
-        using EventCallbackFn = std::function<void(Event&)>;
-        using EventQueue = std::queue<Event>;
+        // using EventPtr = Ref<Event>;
+        using EventCallbackFn = std::function<void(const EventPtr&)>;
+        using EventQueue = std::queue<EventPtr>;
     private:
         LayerStack m_LayerStack;
-        EventQueue m_EventQueue;
+        EventQueue m_EventQueue; // Do not directly push events to this queue, the application class handles it
         
     public:
         virtual ~Window();

@@ -34,10 +34,10 @@ namespace Voyager {
         }
     }
 
-    void Application::OnEvent(Event& e) {
+    void Application::OnEvent(const EventPtr& e) {
         /* Adding events to corresponding window event buffer(queue) */
-        std::scoped_lock<std::mutex> lock(*(m_WindowEventMutexMap[e.GetWindow()].get()));
-        e.GetWindow()->m_EventQueue.push(e);
+        std::scoped_lock<std::mutex> lock(*(m_WindowEventMutexMap[e->GetWindow()].get()));
+        e->GetWindow()->m_EventQueue.emplace(e);
     }
 
     void Application::RunWindow(Ref<Window> window) {
@@ -60,14 +60,14 @@ namespace Voyager {
                 std::scoped_lock<std::mutex> lock(*(m_WindowEventMutexMap[window.get()].get()));
                 // possible want to buffer events at this point and handle them at the event section of the loop
                 while(!window->m_EventQueue.empty()) {
-                    auto& e = window->m_EventQueue.front();
+                    EventPtr& e = window->m_EventQueue.front();
                     EventDispatcher dispatcher(e);
+
                     dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-    
                     for(auto it = window->m_LayerStack.end(); it != window->m_LayerStack.begin(); ) {
                         // handles events from back of the layer stack
                         (*--it)->OnEvent(e); // Tries to handle event
-                        if(e.GetHandled()) break; // if the event was handled in the layer then ok
+                        if(e->GetHandled()) break; // if the event was handled in the layer then ok
                     }
                     window->m_EventQueue.pop();
                 }
@@ -125,7 +125,7 @@ namespace Voyager {
         }
     }
 
-    bool Application::OnWindowClose(WindowCloseEvent& e) { return true; } // overridable
+    bool Application::OnWindowClose(const Ref<WindowCloseEvent>& e) { return true; } // overridable
 
     // bool Application::OnWindowResize(WindowResizeEvent& e) // overridable
 	// {
