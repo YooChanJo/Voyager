@@ -17,7 +17,7 @@ namespace Voyager {
             int Width;
             int Height;
 
-            OpenGLWindow* WindowPtr; // pointer to the window object
+            OpenGLWindow* CurrentWindow; // pointer to the window object
             bool IsClosed;
 
             EventCallbackFn EventCallback;

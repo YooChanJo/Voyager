@@ -23,14 +23,13 @@ public:
 
     void OnAttach(Window* window) override {
         glfwMakeContextCurrent((GLFWwindow*)(window->GetNativeWindow())); // main thread --> impossible
-        std::cout << (GLFWwindow*)(window->GetNativeWindow()) << std::endl;
         batchRenderer = CreateScope<BatchRenderer2D>();
-        // batchRenderer->ProvideShader("C:/Users/Owner/Desktop/project/Voyager/shaders/batch.shader");
-        // batchRenderer->GetShader().Bind();
-        // batchRenderer->GetShader().SetUniform1f("u_WindowHeight", (float)window->GetHeight());
+        batchRenderer->ProvideShader("C:/Users/Owner/Desktop/project/Voyager/shaders/batch.shader");
+        batchRenderer->GetShader().Bind();
+        batchRenderer->GetShader().SetUniform1f("u_WindowHeight", (float)window->GetHeight());
         srand(time(NULL));
 
-#define TEST_50K_SPRITES 0
+#define TEST_50K_SPRITES 1
 #if TEST_50K_SPRITES
         for(float y = 0; y < 9.0f; y += 0.05f) {
             for(float x = 0; x < 16.0f; x += 0.05f) {
@@ -72,15 +71,15 @@ public:
         EventDispatcher dispatcher(e);
         OpenGLShader& shader = batchRenderer->GetShader();
         dispatcher.Dispatch<MouseMovedEvent>([&shader](const Ref<MouseMovedEvent>& event) {
-            VG_CORE_INFO("Mouse moved to: {0}, {1}", event->GetX(), event->GetY());
+            // VG_CORE_INFO("Mouse moved to: {0}, {1}", event->GetX(), event->GetY());
             glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-            // shader.Bind();
-            // shader.SetUniform2f("u_MousePos", event.GetX(), event.GetY());
+            shader.Bind();
+            shader.SetUniform2f("u_MousePos", event->GetX(), event->GetY());
             return true;
         });
         dispatcher.Dispatch<WindowResizeEvent>([&shader](const Ref<WindowResizeEvent>& event) {
-            // shader.Bind();
-            // shader.SetUniform1f("u_WindowHeight", (float)event.GetHeight());
+            shader.Bind();
+            shader.SetUniform1f("u_WindowHeight", (float)event->GetHeight());
             return true;
         });
     }

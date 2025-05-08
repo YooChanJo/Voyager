@@ -25,16 +25,14 @@ namespace Voyager {
 	};
 
     class Application;
-    
+    using EventCallbackFn = std::function<void(const EventPtr&)>;
+    using EventQueue = std::queue<EventPtr>;
+    using WindowPtr = Ref<Window>;
     /* The window class handles innate properties, layer handling */
     /* The window class does not handle rendering functions --> they are handled by the rendererapi */
     /* Direct platform specification is held out in the application class */
     class Window {
         friend class Application;
-    public:
-        // using EventPtr = Ref<Event>;
-        using EventCallbackFn = std::function<void(const EventPtr&)>;
-        using EventQueue = std::queue<EventPtr>;
     private:
         LayerStack m_LayerStack;
         EventQueue m_EventQueue; // Do not directly push events to this queue, the application class handles it
@@ -74,10 +72,10 @@ namespace Voyager {
         static void PollEvents();
 
         template<API T>
-        static Ref<Window> Create(const WindowProps& props = WindowProps());
+        static WindowPtr Create(const WindowProps& props = WindowProps());
     };
     template<>
     void Window::PollEvents<API::OpenGL>();
     template<>
-    Ref<Window> Window::Create<API::OpenGL>(const WindowProps& props);
+    WindowPtr Window::Create<API::OpenGL>(const WindowProps& props);
 }

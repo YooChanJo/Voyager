@@ -25,7 +25,7 @@ namespace Voyager {
         m_Data.Height = props.Height;
         m_Data.EventCallback = [](const EventPtr&){};
 
-        m_Data.WindowPtr = this; // set window pointer to this instance
+        m_Data.CurrentWindow = this; // set window pointer to this instance
         VG_CORE_INFO("Creating window {0} ({1}, {2})", m_Data.Title, m_Data.Width, m_Data.Height);
     
         // initialize window data first
@@ -107,7 +107,7 @@ namespace Voyager {
             WindowData& data = *reinterpret_cast<WindowData*>(glfwGetWindowUserPointer(window));
             data.IsClosed = true; // set window closed to true
 
-            data.EventCallback(CreateRef<WindowCloseEvent>(data.WindowPtr));
+            data.EventCallback(CreateRef<WindowCloseEvent>(data.CurrentWindow));
         });
         glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
             WindowData& data = *reinterpret_cast<WindowData*>(glfwGetWindowUserPointer(window));
@@ -115,7 +115,7 @@ namespace Voyager {
             data.Height = height; // modifies all instances of m_Data
             
             // would want to reset viewport
-            data.EventCallback(CreateRef<WindowResizeEvent>(data.WindowPtr, width, height)); // calling the callback function 
+            data.EventCallback(CreateRef<WindowResizeEvent>(data.CurrentWindow, width, height)); // calling the callback function 
         });
 
         glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -124,16 +124,16 @@ namespace Voyager {
             // implement own key code in future
             switch (action) {
                 case GLFW_PRESS: {
-                    data.EventCallback(CreateRef<KeyPressedEvent>(data.WindowPtr, key, 0)); // calling the callback function 
+                    data.EventCallback(CreateRef<KeyPressedEvent>(data.CurrentWindow, key, 0)); // calling the callback function 
                     break;
                 }
                 case GLFW_RELEASE: {
-                    KeyReleasedEvent event(data.WindowPtr, key);
-                    data.EventCallback(CreateRef<KeyReleasedEvent>(data.WindowPtr, key)); // calling the callback function 
+                    KeyReleasedEvent event(data.CurrentWindow, key);
+                    data.EventCallback(CreateRef<KeyReleasedEvent>(data.CurrentWindow, key)); // calling the callback function 
                     break;
                 }
                 case GLFW_REPEAT: {
-                    data.EventCallback(CreateRef<KeyPressedEvent>(data.WindowPtr, key, 1)); // calling the callback function 
+                    data.EventCallback(CreateRef<KeyPressedEvent>(data.CurrentWindow, key, 1)); // calling the callback function 
                     break;
                 }
             }
@@ -143,11 +143,11 @@ namespace Voyager {
 
             switch (action) {
                 case GLFW_PRESS: {
-                    data.EventCallback(CreateRef<MouseButtonPressedEvent>(data.WindowPtr, button)); // calling the callback function 
+                    data.EventCallback(CreateRef<MouseButtonPressedEvent>(data.CurrentWindow, button)); // calling the callback function 
                     break;
                 }
                 case GLFW_RELEASE: {
-                    data.EventCallback(CreateRef<MouseButtonReleasedEvent>(data.WindowPtr, button)); // calling the callback function 
+                    data.EventCallback(CreateRef<MouseButtonReleasedEvent>(data.CurrentWindow, button)); // calling the callback function 
                     break;
                 }
             }
@@ -155,13 +155,13 @@ namespace Voyager {
         glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset) {
             WindowData& data = *reinterpret_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
-            MouseScrolledEvent event(data.WindowPtr, (float)xOffset, (float)yOffset);
-            data.EventCallback(CreateRef<MouseScrolledEvent>(data.WindowPtr, (float)xOffset, (float)yOffset)); // calling the callback function 
+            MouseScrolledEvent event(data.CurrentWindow, (float)xOffset, (float)yOffset);
+            data.EventCallback(CreateRef<MouseScrolledEvent>(data.CurrentWindow, (float)xOffset, (float)yOffset)); // calling the callback function 
         });
         glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos) {
             WindowData& data = *reinterpret_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
-            data.EventCallback(CreateRef<MouseMovedEvent>(data.WindowPtr, (float)xPos, (float)yPos)); // calling the callback function 
+            data.EventCallback(CreateRef<MouseMovedEvent>(data.CurrentWindow, (float)xPos, (float)yPos)); // calling the callback function 
         });
 
         glfwMakeContextCurrent(nullptr); // unbind for memory issues
