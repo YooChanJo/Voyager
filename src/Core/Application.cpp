@@ -64,6 +64,7 @@ namespace Voyager {
                     EventDispatcher dispatcher(e);
 
                     dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
+                    dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
                     for(auto it = window->m_LayerStack.end(); it != window->m_LayerStack.begin(); ) {
                         // handles events from back of the layer stack
                         (*--it)->OnEvent(e); // Tries to handle event
@@ -127,18 +128,11 @@ namespace Voyager {
 
     bool Application::OnWindowClose(const Ref<WindowCloseEvent>& e) { return true; } // overridable
 
-    // bool Application::OnWindowResize(WindowResizeEvent& e) // overridable
-	// {
-	// 	// if (e.GetWidth() == 0 || e.GetHeight() == 0)
-	// 	// {
-	// 	// 	m_Minimized = true;
-	// 	// 	return false;
-	// 	// }
-
-	// 	// m_Minimized = false;
-	// 	// if(T == API::OpenGL) e.GetWindow()->SetViewport(0, 0, e.GetWidth(), e.GetHeight()); // set viewport to window size
-
-	// 	return false;
-	// }
+    bool Application::OnWindowResize(const Ref<WindowResizeEvent>& e) // overridable
+	{
+        /* Reset viewport */
+        RenderCommand::SetViewport(0, 0, e->GetWidth(), e->GetHeight());
+		return false;
+	}
 
 }

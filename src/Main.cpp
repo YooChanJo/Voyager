@@ -29,7 +29,7 @@ public:
         batchRenderer->GetShader().SetUniform1f("u_WindowHeight", (float)window->GetHeight());
         srand(time(NULL));
 
-#define TEST_50K_SPRITES 1
+#define TEST_50K_SPRITES 0
 #if TEST_50K_SPRITES
         for(float y = 0; y < 9.0f; y += 0.05f) {
             for(float x = 0; x < 16.0f; x += 0.05f) {
@@ -91,10 +91,12 @@ public:
         : Application(GraphicsAPI::OpenGL)
     {
         AddWindow(WindowProps("Test Application Window 1"));
-        // AddWindow(WindowProps("Test Application Window 2"));
+        AddWindow(WindowProps("Test Application Window 2"));
 
-        Ref<Window> window1 = GetWindow(0);
+        WindowPtr window1 = GetWindow(0);
         window1->PushLayer(CreateScope<TestLayer>());
+        WindowPtr window2 = GetWindow(1);
+        window2->PushLayer(CreateScope<TestLayer>());
     }
     virtual ~TestApplication() {
 

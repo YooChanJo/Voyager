@@ -61,7 +61,7 @@ namespace Voyager {
         inline static Application& Get() { return *s_Instance; } // get the instance of the app
     protected:
         virtual bool OnWindowClose(const Ref<WindowCloseEvent>& e);
-        // virtual bool OnWindowResize(WindowResizeEvent& e);
+        virtual bool OnWindowResize(const Ref<WindowResizeEvent>& e);
         void RunWindow(Ref<Window> window);
     private:
         void OnEvent(const EventPtr& e);
