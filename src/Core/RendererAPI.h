@@ -17,6 +17,7 @@ namespace Voyager {
 		virtual void Init() = 0;
 		virtual void SetViewport(int x, int y, int width, int height) = 0;
 		virtual void SetClearColor(const glm::vec4& color) = 0;
+		/* Might want to add clear flags */
 		virtual void Clear() = 0;
 
 		// virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;

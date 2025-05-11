@@ -56,6 +56,7 @@ namespace Voyager {
         void ShutDown() const;
         inline void MakeWindowContextCurrent() const { glfwMakeContextCurrent(m_Window); } // make the window context current
         inline void FreeWindowContextCurrent() const { glfwMakeContextCurrent(nullptr); } // make the window context current
+        
         friend class Window;
         static void PollWindowEvents(); // Window::HandleEvents<API::OpenGL>()
     };

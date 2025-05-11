@@ -45,13 +45,13 @@ namespace Voyager {
         m_Shader.Generate();
     }
 
-    void Simple2DRenderer::Submit(Renderable2D* renderable) {
+    void Simple2DRenderer::Submit(const Renderable2D* renderable) {
         m_RenderQueue.push_back(renderable);
     }
 
     void Simple2DRenderer::Flush() {
         while (!m_RenderQueue.empty()) {
-            Renderable2D* renderable = m_RenderQueue[0];
+            const Renderable2D* renderable = m_RenderQueue[0];
             OpenGLVertexArray vao;
             const auto& color = renderable->GetColor();
 

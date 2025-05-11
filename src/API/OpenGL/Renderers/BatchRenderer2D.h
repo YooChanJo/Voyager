@@ -34,12 +34,13 @@ namespace Voyager {
         void ProvideShader(const ShaderProgramSource& source);
         
         void Begin();
-        void Submit(Renderable2D* renderable) override;
+        void Submit(const Renderable2D* renderable) override;
         void End();
         void Flush() override;
 
         inline OpenGLShader& GetShader() { return m_Shader; }
     private:
         bool Init();
+
     };
 }

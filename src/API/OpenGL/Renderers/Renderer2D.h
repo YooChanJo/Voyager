@@ -35,9 +35,9 @@ namespace Voyager {
         void Push(const glm::mat4& matrix, bool override = false);
         void Pop();
 
-        virtual void Submit(Renderable2D* renderable) = 0;
+        virtual void Submit(const Renderable2D* renderable) = 0;
         virtual void Flush() = 0;
-    public:
+    // public:
         // virtual void ActivateRenderable(Renderable2D& renderable) const;
     };
 }

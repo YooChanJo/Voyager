@@ -92,7 +92,7 @@ namespace Voyager {
         m_VertexArray->Bind();
         m_Buffer = (VertexData*)m_VertexBuffer->MapBuffer(OpenGLBufferAccess::WriteOnly); // map buffer to write data
     }
-    void BatchRenderer2D::Submit(Renderable2D* renderable) {
+    void BatchRenderer2D::Submit(const Renderable2D* renderable) {
         const auto& position = renderable->GetPosition();
         const auto& size = renderable->GetSize();
         const auto& color = renderable->GetColor();
