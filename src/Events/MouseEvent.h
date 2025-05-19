@@ -2,7 +2,6 @@
 #include "Event.h"
 
 namespace Voyager {
-
     class MouseMovedEvent: public Event {
     public:
         MouseMovedEvent(Window* window, float x, float y): m_MouseX(x), m_MouseY(y), Event(window) {}
@@ -21,7 +20,8 @@ namespace Voyager {
     private:
         float m_MouseX, m_MouseY;
     };
-    
+    using MouseMovedEventPtr = Ref<MouseMovedEvent>;
+
     class MouseScrolledEvent: public Event {
     public:
         MouseScrolledEvent(Window* window, float xOffset, float yOffset): m_XOffset(xOffset), m_YOffset(yOffset), Event(window) {}
@@ -40,7 +40,8 @@ namespace Voyager {
     private:
         float m_XOffset, m_YOffset;
     };
-    
+    using MouseScrolledEventPtr = Ref<MouseScrolledEvent>;
+
     class MouseButtonEvent: public Event {
     public:
         inline int GetMouseButton() const { return m_Button; }
@@ -50,6 +51,7 @@ namespace Voyager {
         MouseButtonEvent(Window* window, int button): m_Button(button), Event(window) {}
         int m_Button;
     };
+    using MouseButtonEventPtr = Ref<MouseButtonEvent>;
 
     class MouseButtonPressedEvent: public MouseButtonEvent {
     public:
@@ -63,7 +65,8 @@ namespace Voyager {
         
         EVENT_CLASS_TYPE(MouseButtonPressed);
     };
-    
+    using MouseButtonPressedEventPtr = Ref<MouseButtonPressedEvent>;
+
     class MouseButtonReleasedEvent: public MouseButtonEvent {
     public:
         MouseButtonReleasedEvent(Window* window, int button): MouseButtonEvent(window, button) {}
@@ -76,4 +79,5 @@ namespace Voyager {
         
         EVENT_CLASS_TYPE(MouseButtonReleased);
     };
+    using MouseButtonReleasedEventPtr = Ref<MouseButtonReleasedEvent>;
 }

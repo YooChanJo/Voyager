@@ -14,17 +14,20 @@ namespace Voyager {
         if(s_Instance == this) s_Instance = nullptr; // set instance to nullptr if this is the current instance
     }
 
-    /* Cannot Add windows during runtime, setup all the windows at the beginning */
+    /* Do this operation only in the main thread */
     void Application::AddWindow(const WindowProps& props) {
         // create a new window and push it to the window registry
+        if(m_Running) {
+            // change this part to submit method ==> Needs some modification
+            VG_CORE_ASSERT(false, "Application is running, cannot use this method");
+            return;
+        }
         switch(RenderCommand::s_API) {
             case GraphicsAPI::OpenGL: {
-                std::scoped_lock<std::mutex> lock1(m_WindowRegistryMutex); // lock the mutex for thread safety
-                std::scoped_lock<std::mutex> lock2(m_WindowEventMutexMapMutex);
-
-                m_WindowRegistry.push_back({ Window::Create<GraphicsAPI::OpenGL>(props) });
-                m_WindowRegistry.back().Window->SetEventCallback(BIND_EVENT_FN(OnEvent)); // set event callback for the new window
-                m_WindowEventMutexMap[m_WindowRegistry.back().Window.get()] = CreateScope<std::mutex>(); // requires cleanup;
+                std::scoped_lock<std::mutex> lock1(m_WindowRegistryMutex);
+                m_WindowRegistry.push_back(CreateScope<WindowRegistryElement>(Window::Create<GraphicsAPI::OpenGL>(props)));
+                m_WindowRegistry.back()->Window->SetEventCallback(BIND_EVENT_FN(OnEvent)); // set event callback for the new window
+                m_WindowEventMutexMap[m_WindowRegistry.back()->Window.get()] = CreateScope<std::mutex>(); // requires cleanup;
                 break;   
             }
             default: {
@@ -40,7 +43,7 @@ namespace Voyager {
         e->GetWindow()->m_EventQueue.emplace(e);
     }
 
-    void Application::RunWindow(Ref<Window> window) {
+    void Application::RunWindow(WindowPtr window) {
         window->BeforeLoop();
         while(!window->IsClosed()) {
             window->BeginFrame();
@@ -76,11 +79,13 @@ namespace Voyager {
         }
         window->AfterLoop();
         /* Flagging window */
-        std::scoped_lock<std::mutex> lock(m_WindowRegistryMutex); // lock the mutex for thread safety
-        for (auto it = m_WindowRegistry.begin(); it != m_WindowRegistry.end(); ++it) {
-            if ((it->Window) == window) {
-                it->RemoveFlag = true;           // Flag the register element for removal
-                break;                           // stop after first match
+        {
+            std::scoped_lock<std::mutex> lock(m_WindowRegistryMutex);
+            for (auto it = m_WindowRegistry.begin(); it != m_WindowRegistry.end(); ++it) {
+                if (((*it)->Window) == window) {
+                    (*it)->RemoveFlag = true;           // Flag the register element for removal
+                    break;                           // stop after first match
+                }
             }
         }
     }
@@ -88,12 +93,13 @@ namespace Voyager {
     void Application::Run() {
         // run the app loop for each window in the registry
         for (auto& element : m_WindowRegistry) {
-            Ref<Window> window = element.Window;
+            const WindowPtr& window = element->Window;
             std::thread thread([this, window]() {
                 RunWindow(window);
             });
             thread.detach();            
         }
+        m_Running = true;
         while (m_WindowRegistry.size() > 0) {
             /* Handle Events per Loop */
             switch(RenderCommand::s_API) {
@@ -109,11 +115,12 @@ namespace Voyager {
             /* Destroying Window and Erasing it */
             {
                 std::scoped_lock<std::mutex> lock1(m_WindowRegistryMutex);
-                std::scoped_lock<std::mutex> lock2(m_WindowEventMutexMapMutex);
                 for (auto it = m_WindowRegistry.begin(); it != m_WindowRegistry.end(); ) {
-                    if (it->RemoveFlag) {
+                    if ((*it)->RemoveFlag) {
                         /* Child thread is destroyed --> delete mutex */
-                        m_WindowEventMutexMap.erase(it->Window.get());
+                        m_WindowEventMutexMap.erase((*it)->Window.get());
+                        /* Delete window from map */
+
                         /* Delete window */
                         it = m_WindowRegistry.erase(it); // erase returns next valid iterator
                     } else {
@@ -124,6 +131,7 @@ namespace Voyager {
             /* 100 times per second might need adjustments */
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
+        m_Running = false;
     }
 
     bool Application::OnWindowClose(const Ref<WindowCloseEvent>& e) { return true; } // overridable
@@ -132,7 +140,7 @@ namespace Voyager {
 	{
         /* Reset viewport */
         RenderCommand::SetViewport(0, 0, e->GetWidth(), e->GetHeight());
-		return false;
+		return true;
 	}
 
 }

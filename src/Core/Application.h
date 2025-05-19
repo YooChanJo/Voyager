@@ -39,8 +39,9 @@ namespace Voyager {
 
     struct WindowRegistryElement
     {
-        Ref<Window> Window;
-        bool RemoveFlag = false;
+        WindowPtr Window;
+        bool RemoveFlag;
+        WindowRegistryElement(WindowPtr window, bool removeflag = false): Window(window), RemoveFlag(removeflag) {}
     };
 
     /* Windows are created to match the api of RenderCommand.h */
@@ -51,32 +52,32 @@ namespace Voyager {
 
         void Run();
 
-        /* Cannot Add windows during runtime, setup all the windows at the beginning */
+        /* Only add in the main thread */
         void AddWindow(const WindowProps& props = WindowProps());
-        inline Ref<Window> GetWindow(unsigned int index) { return m_WindowRegistry[index].Window; } // get the window at index
+        inline WindowPtr GetWindow(unsigned int index) { return m_WindowRegistry[index]->Window; } // get the window at index
         
         inline static GraphicsAPI GetAPI() { return RenderCommand::s_API; }
-        inline const std::vector<WindowRegistryElement>& GetWindowRegistry() const { return m_WindowRegistry; }
+        inline const std::vector<Scope<WindowRegistryElement>>& GetWindowRegistry() const { return m_WindowRegistry; }
         
         inline static Application& Get() { return *s_Instance; } // get the instance of the app
     protected:
         virtual bool OnWindowClose(const Ref<WindowCloseEvent>& e);
         virtual bool OnWindowResize(const Ref<WindowResizeEvent>& e);
-        void RunWindow(Ref<Window> window);
     private:
+        void RunWindow(WindowPtr window);
         void OnEvent(const EventPtr& e);
     private:
+        bool m_Running = false;
         inline static Application* s_Instance = nullptr;
-        
         // ApplicationSpecification m_Specification;
-        std::vector<WindowRegistryElement> m_WindowRegistry; // auto memory mangement
+
+        std::vector<Scope<WindowRegistryElement>> m_WindowRegistry; // auto memory mangement
         /* Only the thread of window and the main thread access these mutex --> Called independently alone to prevent deadlock */
         /* Locks the window event queue */
         std::unordered_map<Window*, Scope<std::mutex>> m_WindowEventMutexMap; // event mutex for each window
 
         /* Mutex lock order */
-        std::mutex m_WindowRegistryMutex;
-        std::mutex m_WindowEventMutexMapMutex;
+        std::mutex m_WindowRegistryMutex; // used when modifying window registry and its elements
     };
 
     // to be defined in CLIENT

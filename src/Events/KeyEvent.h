@@ -12,6 +12,7 @@ namespace Voyager {
 
         int m_KeyCode;
     };
+    using KeyEventPtr = Ref<KeyEvent>;
 
     class KeyPressedEvent: public KeyEvent { // key pressed event type (repeat)
     public:
@@ -29,6 +30,7 @@ namespace Voyager {
     private:
         int m_RepeatCount;
     };
+    using KeyPressedEventPtr = Ref<KeyPressedEvent>;
 
     class KeyReleasedEvent: public KeyEvent { // key released event type
     public:
@@ -42,6 +44,7 @@ namespace Voyager {
 
         EVENT_CLASS_TYPE(KeyReleased)
     };
+    using KeyReleasedEventPtr = Ref<KeyReleasedEvent>;
 }
 
 

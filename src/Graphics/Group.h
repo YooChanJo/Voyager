@@ -10,7 +10,9 @@ namespace Voyager {
         std::vector<Renderable2D*> m_Renderables;
         glm::mat4 m_TransformationMatrix;
     public:
-        Group();
+        Group(const glm::mat4& transform);
+        void Add(Renderable2D* renderable);
+
         void Submit(Renderer2D* renderer) const override;
     };
 

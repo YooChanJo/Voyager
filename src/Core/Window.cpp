@@ -50,8 +50,7 @@ namespace Voyager {
 
     template<>
     WindowPtr Window::Create<API::OpenGL>(const WindowProps& props) {
+        
         return CreateRef<OpenGLWindow>(props);
     }
-
-    
 }

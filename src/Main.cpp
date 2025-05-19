@@ -6,10 +6,12 @@ using namespace Voyager;
 
 #include "API/OpenGL/Renderers/BatchRenderer2D.h"
 #include "Graphics/Sprite.h"
+#include "Graphics/Group.h"
 class TestLayer : public Layer {
 private:
     Scope<BatchRenderer2D> batchRenderer;
     std::vector<Sprite*> sprites;
+    Scope<Group> shiftGroup;
 public:
     TestLayer() : Layer("Test Layer") {
         VG_CORE_INFO("TestLayer created!");
@@ -28,18 +30,21 @@ public:
         batchRenderer->GetShader().Bind();
         batchRenderer->GetShader().SetUniform1f("u_WindowHeight", (float)window->GetHeight());
         srand(time(NULL));
+        shiftGroup = CreateScope<Group>(glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.5, 0)));
 
 #define TEST_50K_SPRITES 0
 #if TEST_50K_SPRITES
         for(float y = 0; y < 9.0f; y += 0.05f) {
             for(float x = 0; x < 16.0f; x += 0.05f) {
-                sprites.push_back(new Sprite(x, y, 0.04f, 0.04f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 1)));
+                // sprites.push_back(new Sprite(x, y, 0.04f, 0.04f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 1)));
+                shiftGroup->Add(new Sprite(x, y, 0.04f, 0.04f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 1)));
             }
         }
-#else    
+#else
         for(float y = 0; y < 9.0f; y += 1.0f) {
             for(float x = 0; x < 16.0f; x += 1.0f) {
-                sprites.push_back(new Sprite(x, y, 0.9f, 0.9f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 0.5)));
+                // sprites.push_back(new Sprite(x, y, 0.9f, 0.9f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 0.5)));
+                shiftGroup->Add(new Sprite(x, y, 0.9f, 0.9f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 0.5)));
             }
         }
 #endif
@@ -51,13 +56,14 @@ public:
 
     void OnUpdate(Window* window) override {
         batchRenderer->Begin();
-        int i = 0;
-        for(auto sprite : sprites) {
-            if(i++ % 2 == 0) batchRenderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(2.5, 0, 0)));
-            else batchRenderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.5, 0)));
-            batchRenderer->Submit(sprite);
-            batchRenderer->Pop();
-        }
+        shiftGroup->Submit(batchRenderer.get());
+        // int i = 0;
+        // for(auto sprite : sprites) {
+        //     if(i++ % 2 == 0) batchRenderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(2.5, 0, 0)));
+        //     else batchRenderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.5, 0)));
+        //     batchRenderer->Submit(sprite);
+        //     batchRenderer->Pop();
+        // }
         batchRenderer->End();
         batchRenderer->Flush();
     }
@@ -70,14 +76,14 @@ public:
     void OnEvent(const EventPtr& e) override {
         EventDispatcher dispatcher(e);
         OpenGLShader& shader = batchRenderer->GetShader();
-        dispatcher.Dispatch<MouseMovedEvent>([&shader](const Ref<MouseMovedEvent>& event) {
+        dispatcher.Dispatch<MouseMovedEvent>([&shader](const MouseMovedEventPtr& event) {
             // VG_CORE_INFO("Mouse moved to: {0}, {1}", event->GetX(), event->GetY());
             glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
             shader.Bind();
             shader.SetUniform2f("u_MousePos", event->GetX(), event->GetY());
             return true;
         });
-        dispatcher.Dispatch<WindowResizeEvent>([&shader](const Ref<WindowResizeEvent>& event) {
+        dispatcher.Dispatch<WindowResizeEvent>([&shader](const WindowResizeEventPtr& event) {
             shader.Bind();
             shader.SetUniform1f("u_WindowHeight", (float)event->GetHeight());
             return true;

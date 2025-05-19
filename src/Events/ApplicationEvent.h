@@ -23,6 +23,7 @@ namespace Voyager {
 	private:
 		unsigned int m_Width, m_Height;
 	};
+	using WindowResizeEventPtr = Ref<WindowResizeEvent>;
 
 	class WindowCloseEvent : public Event
 	{
@@ -32,6 +33,7 @@ namespace Voyager {
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 		EVENT_CLASS_TYPE(WindowClose)
 	};
+	using WindowCloseEventPtr = Ref<WindowCloseEvent>;
 
 	// class AppTickEvent : public Event
 	// {

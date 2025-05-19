@@ -34,9 +34,8 @@ namespace Voyager {
     class Window {
         friend class Application;
     private:
-        LayerStack m_LayerStack;
         EventQueue m_EventQueue; // Do not directly push events to this queue, the application class handles it
-        
+        LayerStack m_LayerStack;
     public:
         virtual ~Window();
 

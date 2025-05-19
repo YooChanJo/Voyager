@@ -19,7 +19,7 @@ namespace Voyager {
 
         inline const std::string& GetName() const { return m_Name; }
 
-        static Scope<Layer> Create(const std::string& name = "Layer");
+        // static Scope<Layer> Create(const std::string& name = "Layer");
     private:
         std::string m_Name;
     };
