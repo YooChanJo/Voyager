@@ -1,12 +1,12 @@
 #define USE_ENTRY_POINT 1
 #if USE_ENTRY_POINT
-#include "Core/EntryPoint.h"
+#include "Voyager/Core/EntryPoint.h"
 
 using namespace Voyager;
 
-#include "API/OpenGL/Renderers/BatchRenderer2D.h"
-#include "Graphics/Sprite.h"
-#include "Graphics/Group.h"
+#include "Voyager/API/OpenGL/Renderers/BatchRenderer2D.h"
+#include "Voyager/Graphics/Sprite.h"
+#include "Voyager/Graphics/Group.h"
 class TestLayer : public Layer {
 private:
     Scope<BatchRenderer2D> batchRenderer;

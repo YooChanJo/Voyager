@@ -21,9 +21,11 @@ IncludeDir["glm"] = "src/vendor/glm"
 LibDir = {}
 LibDir["GLFW"] = "bin/" .. outputdir .. "/GLFW"
 LibDir["Glad"] = "bin/" .. outputdir .. "/Glad"
+LibDir["ImGui"] = "bin/" .. outputdir .. "/ImGui"
 
 include "src/vendor/GLFW"
 include "src/vendor/Glad"
+include "src/vendor/ImGui"
 
 project "Voyager"
     kind "ConsoleApp"
@@ -36,8 +38,8 @@ project "Voyager"
     -- pchsource "src/pch.cpp"
 
     files {
-        "src/**.h",
-        "src/**.cpp"
+        "src/Voyager/**.h",
+        "src/Voyager/**.cpp"
     }
     -- Debug purpose needs removal
     -- removefiles {
@@ -47,6 +49,7 @@ project "Voyager"
 
     includedirs {
         "src",
+        "src/Voyager",
         "%{IncludeDir.vendor}",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
@@ -57,6 +60,7 @@ project "Voyager"
     libdirs {
         "%{LibDir.GLFW}",
         "%{LibDir.Glad}",
+        "%{LibDir.ImGui}",
     }
 
     links {
