@@ -4,7 +4,7 @@
 namespace Voyager {
     class MouseMovedEvent: public Event {
     public:
-        MouseMovedEvent(Window* window, float x, float y): m_MouseX(x), m_MouseY(y), Event(window) {}
+        MouseMovedEvent(float x, float y): m_MouseX(x), m_MouseY(y) {}
 
         inline float GetX() const { return m_MouseX; }
         inline float GetY() const { return m_MouseY; }
@@ -24,7 +24,7 @@ namespace Voyager {
 
     class MouseScrolledEvent: public Event {
     public:
-        MouseScrolledEvent(Window* window, float xOffset, float yOffset): m_XOffset(xOffset), m_YOffset(yOffset), Event(window) {}
+        MouseScrolledEvent(float xOffset, float yOffset): m_XOffset(xOffset), m_YOffset(yOffset) {}
 
         inline float GetXOffset() const { return m_XOffset; }
         inline float GetYOffset() const { return m_YOffset; }
@@ -48,14 +48,14 @@ namespace Voyager {
         
         EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
     protected:
-        MouseButtonEvent(Window* window, int button): m_Button(button), Event(window) {}
+        MouseButtonEvent(int button): m_Button(button) {}
         int m_Button;
     };
     using MouseButtonEventPtr = Ref<MouseButtonEvent>;
 
     class MouseButtonPressedEvent: public MouseButtonEvent {
     public:
-        MouseButtonPressedEvent(Window* window, int button): MouseButtonEvent(window, button) {}
+        MouseButtonPressedEvent(int button): MouseButtonEvent(button) {}
 
         std::string ToString() const override {
             std::stringstream ss;
@@ -69,7 +69,7 @@ namespace Voyager {
 
     class MouseButtonReleasedEvent: public MouseButtonEvent {
     public:
-        MouseButtonReleasedEvent(Window* window, int button): MouseButtonEvent(window, button) {}
+        MouseButtonReleasedEvent(int button): MouseButtonEvent(button) {}
 
         std::string ToString() const override {
             std::stringstream ss;

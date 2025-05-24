@@ -31,11 +31,10 @@ namespace Voyager {
 
 #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
     /* Event being virtual creates error in event buffering */
-    class Window; // forward declaration of Window class
     class Event {
         friend class EventDispatcher;
     public:
-        Event(Window* window) : m_Window(window) {}
+        Event() = default;
         inline virtual EventType GetEventType() const = 0;
         inline virtual const char* GetName() const = 0;
         inline virtual int GetCategoryFlags() const = 0;
@@ -46,10 +45,8 @@ namespace Voyager {
         }
 
         inline bool GetHandled() const { return m_Handled; }
-        inline Window* GetWindow() const { return m_Window; } // get the window that created the event
     protected:
         bool m_Handled = false;
-        Window* m_Window; // pointer to the window that created the event
     };
 
     using EventPtr = Ref<Event>; // pointer to the event object

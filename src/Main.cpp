@@ -23,12 +23,12 @@ public:
         }
     }
 
-    void OnAttach(Window* window) override {
-        glfwMakeContextCurrent((GLFWwindow*)(window->GetNativeWindow())); // main thread --> impossible
+    void OnAttach() override {
+        glfwMakeContextCurrent((GLFWwindow*)(Application::Get().GetWindow()->GetNativeWindow())); // main thread --> impossible
         batchRenderer = CreateScope<BatchRenderer2D>();
         batchRenderer->ProvideShader("C:/Users/Owner/Desktop/project/Voyager/shaders/batch.shader");
         batchRenderer->GetShader().Bind();
-        batchRenderer->GetShader().SetUniform1f("u_WindowHeight", (float)window->GetHeight());
+        batchRenderer->GetShader().SetUniform1f("u_WindowHeight", (float)Application::Get().GetWindow()->GetHeight());
         srand(time(NULL));
         shiftGroup = CreateScope<Group>(glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.5, 0)));
 
@@ -54,7 +54,7 @@ public:
         glfwMakeContextCurrent(nullptr);
     }
 
-    void OnUpdate(Window* window) override {
+    void OnUpdate() override {
         batchRenderer->Begin();
         shiftGroup->Submit(batchRenderer.get());
         // int i = 0;
@@ -96,13 +96,7 @@ public:
     TestApplication()
         : Application(GraphicsAPI::OpenGL)
     {
-        AddWindow(WindowProps("Test Application Window 1"));
-        AddWindow(WindowProps("Test Application Window 2"));
-
-        WindowPtr window1 = GetWindow(0);
-        window1->PushLayer(CreateScope<TestLayer>());
-        WindowPtr window2 = GetWindow(1);
-        window2->PushLayer(CreateScope<TestLayer>());
+        GetWindow()->PushLayer(CreateScope<TestLayer>());
     }
     virtual ~TestApplication() {
 

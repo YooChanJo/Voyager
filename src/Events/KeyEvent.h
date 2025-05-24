@@ -8,7 +8,7 @@ namespace Voyager {
 
         EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput);    
     protected:
-        KeyEvent(Window* window, int keycode): m_KeyCode(keycode), Event(window) {}
+        KeyEvent(int keycode): m_KeyCode(keycode) {}
 
         int m_KeyCode;
     };
@@ -16,7 +16,7 @@ namespace Voyager {
 
     class KeyPressedEvent: public KeyEvent { // key pressed event type (repeat)
     public:
-        KeyPressedEvent(Window* window, int keycode, int repeatCount): KeyEvent(window, keycode), m_RepeatCount(repeatCount) {}
+        KeyPressedEvent(int keycode, int repeatCount): KeyEvent(keycode), m_RepeatCount(repeatCount) {}
         
         inline int GetRepeatCount() const { return m_RepeatCount; }
 
@@ -34,7 +34,7 @@ namespace Voyager {
 
     class KeyReleasedEvent: public KeyEvent { // key released event type
     public:
-        KeyReleasedEvent(Window* window, int keycode): KeyEvent(window, keycode) {}
+        KeyReleasedEvent(int keycode): KeyEvent(keycode) {}
 
         std::string ToString() const override { // only for debug purposes
             std::stringstream ss;

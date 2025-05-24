@@ -10,9 +10,9 @@ namespace Voyager {
         Layer(const std::string& name = "Layer");
         virtual ~Layer() = default;
 
-        virtual void OnAttach(Window* window) {}
-        virtual void OnDetach(Window* window) {}
-        virtual void OnUpdate(Window* window) {}
+        virtual void OnAttach() {}
+        virtual void OnDetach() {}
+        virtual void OnUpdate() {}
         
         /* event.GetWindow() would return pointer to window */
         virtual void OnEvent(const EventPtr& event) {}

@@ -5,9 +5,9 @@ namespace Voyager {
     class WindowResizeEvent : public Event
 	{
 	public:
-		WindowResizeEvent(Window* window, unsigned int width, unsigned int height)
-			: m_Width(width), m_Height(height), Event(window) {}
-
+		WindowResizeEvent(unsigned int width, unsigned int height)
+			: m_Width(width), m_Height(height)
+		{}
 		unsigned int GetWidth() const { return m_Width; }
 		unsigned int GetHeight() const { return m_Height; }
 
@@ -28,7 +28,7 @@ namespace Voyager {
 	class WindowCloseEvent : public Event
 	{
 	public:
-		WindowCloseEvent(Window* window) : Event(window) {};
+		WindowCloseEvent() = default;
         
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 		EVENT_CLASS_TYPE(WindowClose)
@@ -38,7 +38,7 @@ namespace Voyager {
 	// class AppTickEvent : public Event
 	// {
 	// public:
-	// 	AppTickEvent(Window* window) : Event(window) {};
+	// 	AppTickEvent() {};
 
 	// 	EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	// 	EVENT_CLASS_TYPE(AppTick)
@@ -47,7 +47,7 @@ namespace Voyager {
 	// class AppUpdateEvent : public Event
 	// {
 	// public:
-	// 	AppUpdateEvent(Window* window) : Event(window) {};
+	// 	AppUpdateEvent() {};
 
 	// 	EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	// 	EVENT_CLASS_TYPE(AppUpdate)
@@ -56,7 +56,7 @@ namespace Voyager {
 	// class AppRenderEvent : public Event
 	// {
 	// public:
-	// 	AppRenderEvent(Window* window) : Event(window) {};
+	// 	AppRenderEvent() {};
 
 	// 	EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	// 	EVENT_CLASS_TYPE(AppRender)
