@@ -39,7 +39,8 @@ project "Voyager"
 
     files {
         "src/Voyager/**.h",
-        "src/Voyager/**.cpp"
+        "src/Voyager/**.cpp",
+        "src/Main.cpp"
     }
     -- Debug purpose needs removal
     -- removefiles {
@@ -72,6 +73,7 @@ project "Voyager"
 
     defines {
         "GLEW_STATIC",
+        "STB_IMAGE_IMPLEMENTATION",
     }
 
     filter "system:windows"
