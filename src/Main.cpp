@@ -69,9 +69,6 @@ public:
         // }
         batchRenderer->End();
         batchRenderer->Flush();
-        if(Input::IsKeyPressed(Key::Space)) {
-            std::cout << "Space is pressed" << std::endl;
-        }
     }
 
     Scope<BatchRenderer2D>& GetBatchRenderer() {
