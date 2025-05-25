@@ -27,7 +27,7 @@ namespace Voyager {
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO();
-        
+
         io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
         io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 
@@ -92,30 +92,18 @@ namespace Voyager {
 		// ImGuizmo::BeginFrame();
 	}
 
-    static bool show = true; // play
 	void ImGuiLayer::End()
 	{
+		/* Set display size --> might want to move this to event callback */
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
 		io.DisplaySize = ImVec2((float)app.GetWindow()->GetWidth(), (float)app.GetWindow()->GetHeight());
-
-        // play
-        {
-            ImGui::Begin("MainDockSpace", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking);
-
-            ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-            ImGui::DockSpace(dockspace_id);
-
-            if(show) ImGui::ShowDemoWindow(&show);
-
-            ImGui::End();   
-        }
 
 		// Rendering
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-
+		/* In the case seperate viewport is defined */
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
 			GLFWwindow* backup_current_context = glfwGetCurrentContext();
@@ -161,7 +149,6 @@ namespace Voyager {
 	unsigned int ImGuiLayer::GetActiveWidgetID() const
 	{
 		return GImGui->ActiveId;
-        return 0;
 	}
 
 }

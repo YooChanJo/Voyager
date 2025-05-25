@@ -74,7 +74,7 @@ namespace Voyager {
             m_ImGuiLayer->Begin();
             {
                 // layers on imgui render
-
+                for (Scope<Layer>& layer : m_Window->m_LayerStack) layer->OnImGuiRender();
             }
             m_ImGuiLayer->End();
 

@@ -12,6 +12,7 @@ namespace Voyager {
 
         virtual void OnAttach() {}
         virtual void OnDetach() {}
+        virtual void OnImGuiRender() {}
         virtual void OnUpdate() {}
         
         /* event.GetWindow() would return pointer to window */

@@ -9,6 +9,7 @@ using namespace Voyager;
 #include "Voyager/Graphics/Group.h"
 
 #include "Voyager/Core/Input.h"
+#include <imgui.h>
 
 class TestLayer : public Layer {
 private:
@@ -55,6 +56,20 @@ public:
 
         batchRenderer->GetShader().SetUniformMat4f("u_MVP", mvp);
         glfwMakeContextCurrent(nullptr);
+    }
+
+    void OnImGuiRender() override {
+        {
+            static bool show = true;
+            ImGui::Begin("MainDockSpace", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking);
+
+            ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+            ImGui::DockSpace(dockspace_id);
+
+            if(show) ImGui::ShowDemoWindow(&show);
+
+            ImGui::End();
+        }
     }
 
     void OnUpdate() override {
