@@ -3,6 +3,7 @@
 
 #include "Events/Event.h"
 #include "Events/ApplicationEvent.h"
+#include "ImGuiLayer.h"
 #include "Window.h"
 #include "GraphicsAPI.h"
 #include "RenderCommand.h"
@@ -56,6 +57,7 @@ namespace Voyager {
     private:
         bool m_Running = false;
         Scope<Window> m_Window;
+        Scope<ImGuiLayer> m_ImGuiLayer; // the highest overlay handled with priority
         // ApplicationSpecification m_Specification;
         
         inline static Application* s_Instance = nullptr;

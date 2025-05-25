@@ -8,7 +8,8 @@
                 "${workspaceFolder}/src/Voyager",
                 "${workspaceFolder}/src/vendor",
                 "${workspaceFolder}/src/vendor/Glad/include",
-                "${workspaceFolder}/src/vendor/GLFW/include"
+                "${workspaceFolder}/src/vendor/GLFW/include",
+                "${workspaceFolder}/src/vendor/ImGui"
             ],
             "defines": [
                 "_DEBUG",

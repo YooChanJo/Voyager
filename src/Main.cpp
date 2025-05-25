@@ -7,6 +7,7 @@ using namespace Voyager;
 #include "Voyager/API/OpenGL/Renderers/BatchRenderer2D.h"
 #include "Voyager/Graphics/Sprite.h"
 #include "Voyager/Graphics/Group.h"
+
 class TestLayer : public Layer {
 private:
     Scope<BatchRenderer2D> batchRenderer;
@@ -86,6 +87,14 @@ public:
         dispatcher.Dispatch<WindowResizeEvent>([&shader](const WindowResizeEventPtr& event) {
             shader.Bind();
             shader.SetUniform1f("u_WindowHeight", (float)event->GetHeight());
+            return true;
+        });
+        dispatcher.Dispatch<KeyPressedEvent>([](const KeyPressedEventPtr& event) {
+            Application::Get().GetWindow()->SetTitle("pressed");
+            return true;
+        });
+        dispatcher.Dispatch<KeyReleasedEvent>([](const KeyReleasedEventPtr& event) {
+            Application::Get().GetWindow()->SetTitle("Released");
             return true;
         });
     }

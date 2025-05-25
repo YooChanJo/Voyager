@@ -7,8 +7,6 @@
 #include "LayerStack.h"
 #include "GraphicsAPI.h"
 
-#include <mutex>
-
 namespace Voyager {
 
     struct WindowProps

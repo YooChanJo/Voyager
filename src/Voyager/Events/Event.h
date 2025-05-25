@@ -33,6 +33,7 @@ namespace Voyager {
     /* Event being virtual creates error in event buffering */
     class Event {
         friend class EventDispatcher;
+        friend class ImGuiLayer;
     public:
         Event() = default;
         inline virtual EventType GetEventType() const = 0;

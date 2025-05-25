@@ -12,6 +12,8 @@ namespace Voyager {
 			case GraphicsAPI::OpenGL: {
                 m_Window = Window::Create<GraphicsAPI::OpenGL>();
                 m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+                m_ImGuiLayer = CreateScope<ImGuiLayer>(); // replace with api specific
+                m_ImGuiLayer->OnAttach();
 				break;
 			}
 			default: {
@@ -23,6 +25,7 @@ namespace Voyager {
     }
     Application::~Application() {
         if(s_Instance == this) s_Instance = nullptr; // set instance to nullptr if this is the current instance
+        m_ImGuiLayer->OnDetach();
     }
 
     void Application::OnEvent(const EventPtr& e) {
@@ -32,6 +35,8 @@ namespace Voyager {
         dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
         dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
 
+        m_ImGuiLayer->OnEvent(e);
+        if(e->GetHandled()) return;
         for(auto it = m_Window->m_LayerStack.end(); it != m_Window->m_LayerStack.begin(); ) {
             // handles events from back of the layer stack
             (*--it)->OnEvent(e); // Tries to handle event
@@ -50,8 +55,15 @@ namespace Voyager {
             // layer handling
             {
                 for (Scope<Layer>& layer : m_Window->m_LayerStack) layer->OnUpdate();
+                // imgui onupdate is empty
             }
-            // would want imgui etc over here
+            // imgui rendering
+            m_ImGuiLayer->Begin();
+            {
+                // layers on imgui render
+
+            }
+            m_ImGuiLayer->End();
 
             m_Window->EndFrame();
             switch(RenderCommand::s_API) {

@@ -17,6 +17,7 @@ IncludeDir["GLFW"] = "src/vendor/GLFW/include"
 IncludeDir["Glad"] = "src/vendor/Glad/include"
 IncludeDir["spdlog"] = "src/vendor/spdlog/include"
 IncludeDir["glm"] = "src/vendor/glm"
+IncludeDir["ImGui"] = "src/vendor/ImGui"
 
 LibDir = {}
 LibDir["GLFW"] = "bin/" .. outputdir .. "/GLFW"
@@ -54,6 +55,7 @@ project "Voyager"
         "%{IncludeDir.vendor}",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
+        "%{IncludeDir.ImGui}",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.glm}",
     }
@@ -69,11 +71,12 @@ project "Voyager"
         "opengl32",
         "GLFW",
         "Glad",
+        "ImGui",
     }
 
     defines {
         "GLEW_STATIC",
-        "STB_IMAGE_IMPLEMENTATION",
+        "STB_IMAGE_IMPLEMENTATION"
     }
 
     filter "system:windows"
