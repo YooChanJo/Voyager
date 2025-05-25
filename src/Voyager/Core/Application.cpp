@@ -26,6 +26,8 @@ namespace Voyager {
     Application::~Application() {
         if(s_Instance == this) s_Instance = nullptr; // set instance to nullptr if this is the current instance
         m_ImGuiLayer->OnDetach();
+        RenderCommand::s_RendererAPI = nullptr;
+        RenderCommand::s_API = API::None;
     }
 
     void Application::OnEvent(const EventPtr& e) {
