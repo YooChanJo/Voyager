@@ -27,8 +27,10 @@ namespace Voyager {
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO();
+        
         io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
         io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
+
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
@@ -156,9 +158,9 @@ namespace Voyager {
 		colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 	}
 
-	uint32_t ImGuiLayer::GetActiveWidgetID() const
+	unsigned int ImGuiLayer::GetActiveWidgetID() const
 	{
-		// return GImGui->ActiveId;
+		return GImGui->ActiveId;
         return 0;
 	}
 

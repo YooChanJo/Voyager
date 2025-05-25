@@ -21,7 +21,7 @@ namespace Voyager {
 		
 		void SetDarkThemeColors();
 
-		uint32_t GetActiveWidgetID() const;
+		unsigned int GetActiveWidgetID() const;
 	private:
         /* With Block Events enabled would want this and by default to block unwanted mouse and key events */
 		bool m_BlockEvents = true;
