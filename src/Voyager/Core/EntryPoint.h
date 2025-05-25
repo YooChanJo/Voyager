@@ -19,4 +19,9 @@ int main(int argc, char** argv)
 	/* Memory cleanup */
 	delete app;
 	VG_CORE_INFO("Successful termination of program");
+
+	/* Memory cleanup testing */
+	// app = Voyager::CreateApplication({ argc, argv });
+	// app->Run();
+	// delete app;
 }

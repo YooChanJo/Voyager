@@ -76,6 +76,7 @@ namespace Voyager {
 	{
 		if (m_BlockEvents)
 		{
+            /* TODO: Specific event handling could be added */
 			ImGuiIO& io = ImGui::GetIO();
 			e->m_Handled |= e->IsInCategory(EventCategoryMouse) && io.WantCaptureMouse;
 			e->m_Handled |= e->IsInCategory(EventCategoryKeyboard) && io.WantCaptureKeyboard;

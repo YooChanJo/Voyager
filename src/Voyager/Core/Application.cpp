@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "Input.h"
 
 namespace Voyager {
 #define BIND_EVENT_FN(Func) std::bind(&Application::Func, this, std::placeholders::_1)
@@ -12,6 +13,7 @@ namespace Voyager {
 			case GraphicsAPI::OpenGL: {
                 m_Window = Window::Create<GraphicsAPI::OpenGL>();
                 m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+
                 m_ImGuiLayer = CreateScope<ImGuiLayer>(); // replace with api specific
                 m_ImGuiLayer->OnAttach();
 				break;
@@ -21,13 +23,22 @@ namespace Voyager {
 				return;
 			}
 		}
+        Input::Init(api, m_Window->GetNativeWindow());
         // m_Specification = specification;
     }
     Application::~Application() {
+        /* Reset Application instance */
         if(s_Instance == this) s_Instance = nullptr; // set instance to nullptr if this is the current instance
+        
+        /* Detach imgui layer */
         m_ImGuiLayer->OnDetach();
+
+        /* Reset RenderCommand */
         RenderCommand::s_RendererAPI = nullptr;
         RenderCommand::s_API = API::None;
+
+        /* Reset Input */
+        Input::s_InputAPI = nullptr;
     }
 
     void Application::OnEvent(const EventPtr& e) {

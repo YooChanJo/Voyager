@@ -8,6 +8,8 @@ using namespace Voyager;
 #include "Voyager/Graphics/Sprite.h"
 #include "Voyager/Graphics/Group.h"
 
+#include "Voyager/Core/Input.h"
+
 class TestLayer : public Layer {
 private:
     Scope<BatchRenderer2D> batchRenderer;
@@ -67,6 +69,9 @@ public:
         // }
         batchRenderer->End();
         batchRenderer->Flush();
+        if(Input::IsKeyPressed(Key::Space)) {
+            std::cout << "Space is pressed" << std::endl;
+        }
     }
 
     Scope<BatchRenderer2D>& GetBatchRenderer() {

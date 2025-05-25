@@ -50,6 +50,7 @@ namespace Voyager {
         bool m_Handled = false;
     };
 
+    /* TODO: Change all event ptrs to just event references */
     using EventPtr = Ref<Event>; // pointer to the event object
     template <typename T> // T is the type of an Event
     using EventDispatchFn = std::function<bool(const Ref<T>&)>;
