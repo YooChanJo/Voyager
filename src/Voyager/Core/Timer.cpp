@@ -12,6 +12,10 @@ namespace Voyager {
     double Timer::Elapsed() {
         auto current = std::chrono::steady_clock::now();
         std::chrono::duration<double> elapsed = current - m_Start;
-        return elapsed.count(); // returns seconds as float
+        return elapsed.count(); // returns seconds as double
+    }
+
+    double Timer::ElapsedMillis() {
+        return Elapsed() * 1000.0;
     }
 }

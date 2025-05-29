@@ -10,5 +10,6 @@ namespace Voyager {
 
         void Reset();
         double Elapsed(); // seconds
+        double ElapsedMillis(); // millies
     };
 }

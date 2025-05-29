@@ -82,7 +82,10 @@
         "variant": "cpp",
         "xtree": "cpp",
         "unordered_set": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "numeric": "cpp",
+        "set": "cpp",
+        "stack": "cpp"
     },
     // "C_Cpp.errorSquiggles": "disabled"
 }
