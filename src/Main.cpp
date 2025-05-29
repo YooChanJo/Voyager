@@ -4,125 +4,125 @@
 
 using namespace Voyager;
 
-#include "Voyager/API/OpenGL/Renderers/BatchRenderer2D.h"
+// #include "Voyager/API/OpenGL/Renderers/BatchRenderer2D.h"
 #include "Voyager/Graphics/Sprite.h"
 #include "Voyager/Graphics/Group.h"
 
 #include "Voyager/Core/Input.h"
 #include <imgui.h>
 
-class TestLayer : public Layer {
-private:
-    Scope<BatchRenderer2D> batchRenderer;
-    std::vector<Sprite*> sprites;
-    Scope<Group> shiftGroup;
-public:
-    TestLayer() : Layer("Test Layer") {
-        VG_CORE_INFO("TestLayer created!");
-    }
-    ~TestLayer() {
-        VG_CORE_INFO("TestLayer destroyed!");
-        for(auto sprite : sprites) {
-            delete sprite;
-        }
-    }
+// class TestLayer : public Layer {
+// private:
+//     Scope<BatchRenderer2D> batchRenderer;
+//     std::vector<Sprite*> sprites;
+//     Scope<Group> shiftGroup;
+// public:
+//     TestLayer() : Layer("Test Layer") {
+//         VG_CORE_INFO("TestLayer created!");
+//     }
+//     ~TestLayer() {
+//         VG_CORE_INFO("TestLayer destroyed!");
+//         for(auto sprite : sprites) {
+//             delete sprite;
+//         }
+//     }
 
-    void OnAttach() override {
-        glfwMakeContextCurrent((GLFWwindow*)(Application::Get().GetWindow()->GetNativeWindow())); // main thread --> impossible
-        batchRenderer = CreateScope<BatchRenderer2D>();
-        batchRenderer->ProvideShader("C:/Users/Owner/Desktop/project/Voyager/shaders/batch.shader");
-        batchRenderer->GetShader().Bind();
-        batchRenderer->GetShader().SetUniform1f("u_WindowHeight", (float)Application::Get().GetWindow()->GetHeight());
-        srand(time(NULL));
-        shiftGroup = CreateScope<Group>(glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.5, 0)));
+//     void OnAttach() override {
+//         glfwMakeContextCurrent((GLFWwindow*)(Application::Get().GetWindow()->GetNativeWindow())); // main thread --> impossible
+//         batchRenderer = CreateScope<BatchRenderer2D>();
+//         batchRenderer->ProvideShader("C:/Users/Owner/Desktop/project/Voyager/shaders/batch.shader");
+//         batchRenderer->GetShader().Bind();
+//         batchRenderer->GetShader().SetUniform1f("u_WindowHeight", (float)Application::Get().GetWindow()->GetHeight());
+//         srand(time(NULL));
+//         shiftGroup = CreateScope<Group>(glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.5, 0)));
 
-#define TEST_50K_SPRITES 0
-#if TEST_50K_SPRITES
-        for(float y = 0; y < 9.0f; y += 0.05f) {
-            for(float x = 0; x < 16.0f; x += 0.05f) {
-                // sprites.push_back(new Sprite(x, y, 0.04f, 0.04f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 1)));
-                shiftGroup->Add(new Sprite(x, y, 0.04f, 0.04f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 1)));
-            }
-        }
-#else
-        for(float y = 0; y < 9.0f; y += 1.0f) {
-            for(float x = 0; x < 16.0f; x += 1.0f) {
-                // sprites.push_back(new Sprite(x, y, 0.9f, 0.9f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 0.5)));
-                shiftGroup->Add(new Sprite(x, y, 0.9f, 0.9f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 0.5)));
-            }
-        }
-#endif
-        glm::mat4 mvp = glm::ortho(0.0f, 16.0f, 0.0f, 9.0f);
+// #define TEST_50K_SPRITES 0
+// #if TEST_50K_SPRITES
+//         for(float y = 0; y < 9.0f; y += 0.05f) {
+//             for(float x = 0; x < 16.0f; x += 0.05f) {
+//                 // sprites.push_back(new Sprite(x, y, 0.04f, 0.04f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 1)));
+//                 shiftGroup->Add(new Sprite(x, y, 0.04f, 0.04f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 1)));
+//             }
+//         }
+// #else
+//         for(float y = 0; y < 9.0f; y += 1.0f) {
+//             for(float x = 0; x < 16.0f; x += 1.0f) {
+//                 // sprites.push_back(new Sprite(x, y, 0.9f, 0.9f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 0.5)));
+//                 shiftGroup->Add(new Sprite(x, y, 0.9f, 0.9f, glm::vec4(rand() % 1000 / 1000.0f, 0, 1, 0.5)));
+//             }
+//         }
+// #endif
+//         glm::mat4 mvp = glm::ortho(0.0f, 16.0f, 0.0f, 9.0f);
 
-        batchRenderer->GetShader().SetUniformMat4f("u_MVP", mvp);
-        glfwMakeContextCurrent(nullptr);
-    }
+//         batchRenderer->GetShader().SetUniformMat4f("u_MVP", mvp);
+//         glfwMakeContextCurrent(nullptr);
+//     }
 
-    void OnImGuiRender() override {
-        {
-            static bool show = true;
-            ImGui::Begin("MainDockSpace", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking);
+//     void OnImGuiRender() override {
+//         {
+//             static bool show = true;
+//             // ImGui::Begin("MainDockSpace", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking);
 
-            ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-            ImGui::DockSpace(dockspace_id);
+//             // ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+//             // ImGui::DockSpace(dockspace_id);
 
-            if(show) ImGui::ShowDemoWindow(&show);
+//             if(show) ImGui::ShowDemoWindow(&show);
 
-            ImGui::End();
-        }
-    }
+//             // ImGui::End();
+//         }
+//     }
 
-    void OnUpdate() override {
-        batchRenderer->Begin();
-        shiftGroup->Submit(batchRenderer.get());
-        // int i = 0;
-        // for(auto sprite : sprites) {
-        //     if(i++ % 2 == 0) batchRenderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(2.5, 0, 0)));
-        //     else batchRenderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.5, 0)));
-        //     batchRenderer->Submit(sprite);
-        //     batchRenderer->Pop();
-        // }
-        batchRenderer->End();
-        batchRenderer->Flush();
-    }
+//     void OnUpdate() override {
+//         batchRenderer->Begin();
+//         shiftGroup->Submit(batchRenderer.get());
+//         // int i = 0;
+//         // for(auto sprite : sprites) {
+//         //     if(i++ % 2 == 0) batchRenderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(2.5, 0, 0)));
+//         //     else batchRenderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0, 2.5, 0)));
+//         //     batchRenderer->Submit(sprite);
+//         //     batchRenderer->Pop();
+//         // }
+//         batchRenderer->End();
+//         batchRenderer->Flush();
+//     }
 
-    Scope<BatchRenderer2D>& GetBatchRenderer() {
-        return batchRenderer;
-    }
+//     Scope<BatchRenderer2D>& GetBatchRenderer() {
+//         return batchRenderer;
+//     }
 
 
-    void OnEvent(const EventPtr& e) override {
-        EventDispatcher dispatcher(e);
-        OpenGLShader& shader = batchRenderer->GetShader();
-        dispatcher.Dispatch<MouseMovedEvent>([&shader](const MouseMovedEventPtr& event) {
-            // VG_CORE_INFO("Mouse moved to: {0}, {1}", event->GetX(), event->GetY());
-            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-            shader.Bind();
-            shader.SetUniform2f("u_MousePos", event->GetX(), event->GetY());
-            return true;
-        });
-        dispatcher.Dispatch<WindowResizeEvent>([&shader](const WindowResizeEventPtr& event) {
-            shader.Bind();
-            shader.SetUniform1f("u_WindowHeight", (float)event->GetHeight());
-            return true;
-        });
-        dispatcher.Dispatch<KeyPressedEvent>([](const KeyPressedEventPtr& event) {
-            Application::Get().GetWindow()->SetTitle("pressed");
-            return true;
-        });
-        dispatcher.Dispatch<KeyReleasedEvent>([](const KeyReleasedEventPtr& event) {
-            Application::Get().GetWindow()->SetTitle("Released");
-            return true;
-        });
-    }
-};
+//     void OnEvent(const EventPtr& e) override {
+//         EventDispatcher dispatcher(e);
+//         OpenGLShader& shader = batchRenderer->GetShader();
+//         dispatcher.Dispatch<MouseMovedEvent>([&shader](const MouseMovedEventPtr& event) {
+//             // VG_CORE_INFO("Mouse moved to: {0}, {1}", event->GetX(), event->GetY());
+//             glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+//             shader.Bind();
+//             shader.SetUniform2f("u_MousePos", event->GetX(), event->GetY());
+//             return true;
+//         });
+//         dispatcher.Dispatch<WindowResizeEvent>([&shader](const WindowResizeEventPtr& event) {
+//             shader.Bind();
+//             shader.SetUniform1f("u_WindowHeight", (float)event->GetHeight());
+//             return true;
+//         });
+//         dispatcher.Dispatch<KeyPressedEvent>([](const KeyPressedEventPtr& event) {
+//             Application::Get().GetWindow()->SetTitle("pressed");
+//             return true;
+//         });
+//         dispatcher.Dispatch<KeyReleasedEvent>([](const KeyReleasedEventPtr& event) {
+//             Application::Get().GetWindow()->SetTitle("Released");
+//             return true;
+//         });
+//     }
+// };
 
 class TestApplication : public Application {
 public:
     TestApplication()
         : Application(GraphicsAPI::OpenGL)
     {
-        GetWindow()->PushLayer(CreateScope<TestLayer>());
+        // GetWindow()->PushLayer(CreateScope<TestLayer>());
     }
     virtual ~TestApplication() {
 

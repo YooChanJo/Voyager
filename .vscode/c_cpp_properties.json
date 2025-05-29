@@ -3,13 +3,14 @@
         {
             "name": "Win32",
             "includePath": [
-                /* "${workspaceFolder}/**", */
                 "${workspaceFolder}/src/**",
                 "${workspaceFolder}/src/Voyager",
                 "${workspaceFolder}/src/vendor",
                 "${workspaceFolder}/src/vendor/Glad/include",
                 "${workspaceFolder}/src/vendor/GLFW/include",
-                "${workspaceFolder}/src/vendor/ImGui"
+                "${workspaceFolder}/src/vendor/ImGui",
+                "${workspaceFolder}/src/vendor/spdlog/include",
+                "${workspaceFolder}/src/vendor/spirv_cross"
             ],
             "defines": [
                 "_DEBUG",

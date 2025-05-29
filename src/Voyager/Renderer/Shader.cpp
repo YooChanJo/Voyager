@@ -1,20 +1,22 @@
-// #include "hzpch.h"
-// #include "Hazel/Renderer/Shader.h"
+// #include "pch.h"
+// #include "Shader.h"
+// #include "Renderer.h"
 
-// #include "Hazel/Renderer/Renderer.h"
-// #include "Platform/OpenGL/OpenGLShader.h"
+// #include "Core/Assert.h"
 
-// namespace Hazel {
+// #include "API/OpenGL/OpenGLShader.h"
+
+// namespace Voyager {
 
 // 	Ref<Shader> Shader::Create(const std::string& filepath)
 // 	{
 // 		switch (Renderer::GetAPI())
 // 		{
-// 			case RendererAPI::API::None:    HZ_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-// 			case RendererAPI::API::OpenGL:  return CreateRef<OpenGLShader>(filepath);
+// 			case GraphicsAPI::None:    VG_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+// 			case GraphicsAPI::OpenGL:  return CreateRef<OpenGLShader>(filepath);
 // 		}
 
-// 		HZ_CORE_ASSERT(false, "Unknown RendererAPI!");
+// 		VG_CORE_ASSERT(false, "Unknown RendererAPI!");
 // 		return nullptr;
 // 	}
 
@@ -22,17 +24,17 @@
 // 	{
 // 		switch (Renderer::GetAPI())
 // 		{
-// 			case RendererAPI::API::None:    HZ_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-// 			case RendererAPI::API::OpenGL:  return CreateRef<OpenGLShader>(name, vertexSrc, fragmentSrc);
+// 			case GraphicsAPI::None:    VG_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+// 			case GraphicsAPI::OpenGL:  return CreateRef<OpenGLShader>(name, vertexSrc, fragmentSrc);
 // 		}
 
-// 		HZ_CORE_ASSERT(false, "Unknown RendererAPI!");
+// 		VG_CORE_ASSERT(false, "Unknown RendererAPI!");
 // 		return nullptr;
 // 	}
 
 // 	void ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
 // 	{
-// 		HZ_CORE_ASSERT(!Exists(name), "Shader already exists!");
+// 		VG_CORE_ASSERT(!Exists(name), "Shader already exists!");
 // 		m_Shaders[name] = shader;
 // 	}
 
@@ -58,7 +60,7 @@
 
 // 	Ref<Shader> ShaderLibrary::Get(const std::string& name)
 // 	{
-// 		HZ_CORE_ASSERT(Exists(name), "Shader not found!");
+// 		VG_CORE_ASSERT(Exists(name), "Shader not found!");
 // 		return m_Shaders[name];
 // 	}
 

@@ -1,55 +1,48 @@
-#pragma once
-#include "pch.h"
+// #pragma once
+// #include "Renderer/Shader.h"
 
-namespace Voyager {
+// // TODO: REMOVE!
+// typedef unsigned int GLenum;
 
-        
-    struct ShaderProgramSource {
-        std::string vertexSource;
-        std::string fragmentSource;
-    };
+// namespace Voyager {
 
-    class OpenGLShader {
-    private:
-        unsigned int m_RendererID;
-        std::string m_FilePath;
-        ShaderProgramSource m_Source;
-        std::unordered_map<std::string, int> m_UniformLocationCache;
-        public:
-        OpenGLShader();
-        OpenGLShader(const std::string& filepath);
-        OpenGLShader(const ShaderProgramSource& source); // not a reference
-        ~OpenGLShader();
+// 	class OpenGLShader : public Shader
+// 	{
+// 	public:
+// 		OpenGLShader(const std::string& filepath);
+// 		OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
+// 		virtual ~OpenGLShader();
 
-        void Generate();
-        
-        inline std::string GetFilePath() const { return m_FilePath; }
-        inline ShaderProgramSource GetSource() const { return m_Source; }
+// 		virtual void Bind() const override;
+// 		virtual void Unbind() const override;
 
-        // called by the renderer --> needs context current
-        void Bind() const;
-        void Unbind() const;
+// 		virtual void SetInt(const std::string& name, int value) override;
+// 		virtual void SetIntArray(const std::string& name, int* values, uint32_t count) override;
+// 		virtual void SetFloat(const std::string& name, float value) override;
+// 		virtual void SetFloat2(const std::string& name, const glm::vec2& value) override;
+// 		virtual void SetFloat3(const std::string& name, const glm::vec3& value) override;
+// 		virtual void SetFloat4(const std::string& name, const glm::vec4& value) override;
+// 		virtual void SetMat4(const std::string& name, const glm::mat4& value) override;
 
-        // set uniforms + needs extensions
-        void SetUniform1i(const std::string& name, int value);
-        void SetUniform1f(const std::string& name, float value);
-        void SetUniform2f(const std::string& name, float v0, float v1);
-        void SetUniform3f(const std::string& name, float v0, float v1, float v2);
-        void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
-    
-        void SetUniform1iv(const std::string& name, int count, const int* values);
-        void SetUniform1fv(const std::string& name, int count, const float* values);
-        void SetUniform2fv(const std::string& name, int count, const float* values);
-        void SetUniform3fv(const std::string& name, int count, const float* values);
-        void SetUniform4fv(const std::string& name, int count, const float* values);
-    
-        void SetUniformMat2f(const std::string& name, const glm::mat2& matrix);
-        void SetUniformMat3f(const std::string& name, const glm::mat3& matrix);
-        void SetUniformMat4f(const std::string& name, const glm::mat4& matrix);
-    private:
-        static ShaderProgramSource ParseShader(const std::string& filePath);
-        static unsigned int CompileShader(unsigned int type, const std::string& source);
-        static unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
-        int GetUniformLocation(const std::string& name);
-    };
-}
+// 		virtual const std::string& GetName() const override { return m_Name; }
+
+// 	private:
+// 		std::string ReadFile(const std::string& filepath);
+// 		std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
+
+// 		// void CompileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources);
+// 		void CompileOrGetOpenGLBinaries();
+// 		void CreateProgram();
+// 		void Reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
+// 	private:
+// 		uint32_t m_RendererID;
+// 		std::string m_FilePath;
+// 		std::string m_Name;
+
+// 		// std::unordered_map<GLenum, std::vector<uint32_t>> m_VulkanSPIRV;
+// 		std::unordered_map<GLenum, std::vector<uint32_t>> m_OpenGLSPIRV;
+
+// 		std::unordered_map<GLenum, std::string> m_OpenGLSourceCode;
+// 	};
+
+// }

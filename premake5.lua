@@ -18,15 +18,19 @@ IncludeDir["Glad"] = "src/vendor/Glad/include"
 IncludeDir["spdlog"] = "src/vendor/spdlog/include"
 IncludeDir["glm"] = "src/vendor/glm"
 IncludeDir["ImGui"] = "src/vendor/ImGui"
+IncludeDir["spirv_cross"] = "src/vendor/spirv_cross"
+
 
 LibDir = {}
 LibDir["GLFW"] = "bin/" .. outputdir .. "/GLFW"
 LibDir["Glad"] = "bin/" .. outputdir .. "/Glad"
 LibDir["ImGui"] = "bin/" .. outputdir .. "/ImGui"
+LibDir["spirv_cross"] = "bin/" .. outputdir .. "/spirv_cross"
 
 include "src/vendor/GLFW"
 include "src/vendor/Glad"
 include "src/vendor/ImGui"
+include "src/vendor/spirv_cross"
 
 project "Voyager"
     kind "ConsoleApp"
@@ -58,12 +62,14 @@ project "Voyager"
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.glm}",
+        "%{IncludeDir.spirv_cross}",
     }
 
     libdirs {
         "%{LibDir.GLFW}",
         "%{LibDir.Glad}",
         "%{LibDir.ImGui}",
+        "%{LibDir.spirv_cross}",
     }
 
     links {
@@ -72,6 +78,7 @@ project "Voyager"
         "GLFW",
         "Glad",
         "ImGui",
+        "spirv_cross",
     }
 
     defines {

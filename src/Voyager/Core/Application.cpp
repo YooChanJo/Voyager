@@ -34,11 +34,10 @@ namespace Voyager {
         m_ImGuiLayer->OnDetach();
 
         /* Reset RenderCommand */
-        RenderCommand::s_RendererAPI = nullptr;
-        RenderCommand::s_API = API::None;
+        RenderCommand::Shutdown();
 
         /* Reset Input */
-        Input::s_InputAPI = nullptr;
+        Input::Shutdown();
     }
 
     void Application::OnEvent(const EventPtr& e) {
@@ -59,10 +58,8 @@ namespace Voyager {
 
     void Application::Run() {
         m_Running = true;
-        m_Window->BeforeLoop();
-        while(!m_Window->IsClosed()) {
-            m_Window->BeginFrame();
 
+        while(!m_Window->IsClosed()) {
             // main thread queue execution
 
             // layer handling
@@ -78,19 +75,9 @@ namespace Voyager {
             }
             m_ImGuiLayer->End();
 
-            m_Window->EndFrame();
-            switch(RenderCommand::s_API) {
-                case GraphicsAPI::OpenGL: {
-                    Window::PollEvents<GraphicsAPI::OpenGL>();
-                    break;
-                }
-                default: {
-                    VG_CORE_ASSERT(false, "Cannot handle events in application with current GraphicsAPI");
-                    break;
-                }
-            }
+            m_Window->OnUpdate();
         }
-        m_Window->AfterLoop();
+        VG_CORE_INFO("Ending window loop: {0}", m_Window->GetTitle());
         m_Running = false;
     }
 
@@ -100,7 +87,7 @@ namespace Voyager {
 	{
         /* Reset viewport */
         RenderCommand::SetViewport(0, 0, e->GetWidth(), e->GetHeight());
-		return true;
+		return false;
 	}
 
 }

@@ -44,10 +44,11 @@ namespace Voyager {
         inline void* GetNativeWindow() const override { return (void*)m_Window; } // get native window pointer
     private:
 
-        void BeforeLoop() override; // before the loop starts
-        void AfterLoop() override; // after the loop ends
-        void BeginFrame() override; // before the frame starts
-        void EndFrame() override; // after the frame ends
+        // void BeforeLoop() override; // before the loop starts
+        // void AfterLoop() override; // after the loop ends
+        // void BeginFrame() override; // before the frame starts
+        // void EndFrame() override; // after the frame ends
+        void OnUpdate() override;
 
         inline bool IsClosed() const override { return m_Data.IsClosed; }
         inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
@@ -56,9 +57,6 @@ namespace Voyager {
         void ShutDown() const;
         inline void MakeWindowContextCurrent() const { glfwMakeContextCurrent(m_Window); } // make the window context current
         inline void FreeWindowContextCurrent() const { glfwMakeContextCurrent(nullptr); } // make the window context current
-        
-        friend class Window;
-        static void PollWindowEvents(); // Window::HandleEvents<API::OpenGL>()
     };
 
 }

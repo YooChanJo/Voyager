@@ -28,17 +28,6 @@ namespace Voyager {
             m_LayerStack.PopOverlay(index);
         }
     }
-
-    template<API T>
-    void Window::PollEvents() {
-        /* Invalid api */
-        static_assert(false, "Unsupported API type to create Window");
-    }
-
-    template<>
-    void Window::PollEvents<API::OpenGL>() {
-        OpenGLWindow::PollWindowEvents(); // preventing busy waiting
-    }
     
     template<API T>
     Scope<Window> Window::Create(const WindowProps& props) {

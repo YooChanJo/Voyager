@@ -51,25 +51,22 @@ namespace Voyager {
         virtual void SetTitle(const std::string& title) = 0;
         virtual void SetSize(int width, int height) = 0;
     private:
-        virtual void BeforeLoop() = 0; // before the loop starts
-        virtual void AfterLoop() = 0; // after the loop ends
-        virtual void BeginFrame() = 0; // before the frame starts
-        virtual void EndFrame() = 0; // after the frame ends
-        
+        // virtual void BeforeLoop() = 0; // before the loop starts
+        // virtual void AfterLoop() = 0; // after the loop ends
+        // virtual void BeginFrame() = 0; // before the frame starts
+        // virtual void EndFrame() = 0; // after the frame ends
+        virtual void OnUpdate() = 0;
+
         virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
         virtual bool IsClosed() const = 0;
     public: // back to private --> remove this line both from here and api
         virtual void* GetNativeWindow() const = 0;   
     public:
         /* Static functions */
-        template<API T>
-        static void PollEvents();
 
         template<API T>
         static Scope<Window> Create(const WindowProps& props = WindowProps());
     };
-    template<>
-    void Window::PollEvents<API::OpenGL>();
     template<>
     Scope<Window> Window::Create<API::OpenGL>(const WindowProps& props);
 }

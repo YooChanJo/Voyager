@@ -84,6 +84,9 @@ namespace Voyager {
                 s_GladInitialized = true;
             }
         }
+        std::cout << "GL version: " << glGetString(GL_VERSION) << std::endl;
+        std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+
         /* Enable blending */
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -161,7 +164,8 @@ namespace Voyager {
             data.EventCallback(CreateRef<MouseMovedEvent>((float)xPos, (float)yPos)); // calling the callback function 
         });
 
-        glfwMakeContextCurrent(nullptr); // unbind for memory issues
+        /* Keeping the inital context throughout the entire app */
+        // glfwMakeContextCurrent(nullptr); // unbind for memory issues
         return true;
     }
     void OpenGLWindow::SetTitle(const std::string& title) {
@@ -174,23 +178,19 @@ namespace Voyager {
         glfwSetWindowSize(m_Window, width, height); // set window size
     }
 
-    void OpenGLWindow::PollWindowEvents() {
-        glfwPollEvents(); // poll events for all windows
-    }
-
-    void OpenGLWindow::BeforeLoop() {
-        glfwMakeContextCurrent(m_Window);
-    }
-    void OpenGLWindow::AfterLoop() {
-        VG_CORE_INFO("Ending window loop: {0}", m_Data.Title);
-        glfwMakeContextCurrent(nullptr); // release ptr
-    }
-    void OpenGLWindow::BeginFrame() {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
-    /* Context reliant */
-    void OpenGLWindow::EndFrame() {
+    // void OpenGLWindow::BeforeLoop() {}
+    // void OpenGLWindow::AfterLoop() {
+    //     VG_CORE_INFO("Ending window loop: {0}", m_Data.Title);
+    // }
+    // void OpenGLWindow::BeginFrame() {}
+    // void OpenGLWindow::EndFrame() {
+    //     glfwSwapBuffers(m_Window);
+    //     glfwPollEvents(); // poll events for all windows
+    // }
+    
+    void OpenGLWindow::OnUpdate() {
         glfwSwapBuffers(m_Window);
+        glfwPollEvents(); // poll events for all windows
     }
 
 

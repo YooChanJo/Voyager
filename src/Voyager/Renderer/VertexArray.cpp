@@ -1,21 +1,23 @@
-// #include "hzpch.h"
-// #include "Hazel/Renderer/VertexArray.h"
+#include "pch.h"
+#include "VertexArray.h"
+#include "Renderer.h"
 
-// #include "Hazel/Renderer/Renderer.h"
-// #include "Platform/OpenGL/OpenGLVertexArray.h"
+#include "Core/Assert.h"
 
-// namespace Hazel {
+#include "API/OpenGL/OpenGLVertexArray.h"
 
-// 	Ref<VertexArray> VertexArray::Create()
-// 	{
-// 		switch (Renderer::GetAPI())
-// 		{
-// 			case RendererAPI::API::None:    HZ_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-// 			case RendererAPI::API::OpenGL:  return CreateRef<OpenGLVertexArray>();
-// 		}
+namespace Voyager {
 
-// 		HZ_CORE_ASSERT(false, "Unknown RendererAPI!");
-// 		return nullptr;
-// 	}
+	Ref<VertexArray> VertexArray::Create()
+	{
+		switch (Renderer::GetAPI())
+		{
+			case GraphicsAPI::None:    VG_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+			case GraphicsAPI::OpenGL:  return CreateRef<OpenGLVertexArray>();
+		}
 
-// }
+		VG_CORE_ASSERT(false, "Unknown RendererAPI!");
+		return nullptr;
+	}
+
+}

@@ -16,4 +16,7 @@ namespace Voyager {
 			}
 		}
 	}
+	void Input::Shutdown() {
+		Input::s_InputAPI = nullptr;
+	}
 }

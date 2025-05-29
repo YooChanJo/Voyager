@@ -19,6 +19,7 @@ namespace Voyager {
 		inline static float GetMouseY() { return s_InputAPI->GetMouseY(); }
 	private:
 		static void Init(GraphicsAPI api, void* native_window); // only called by class application
+		static void Shutdown();
 		inline static Scope<InputAPI> s_InputAPI = nullptr;
 	};
 }

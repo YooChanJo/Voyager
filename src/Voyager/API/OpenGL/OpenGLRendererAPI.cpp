@@ -1,30 +1,31 @@
 #include "OpenGLRendererAPI.h"
 
-#include <Glad/glad.h>
 #include "Core/Log.h"
 #include "Core/Assert.h"
 
+#include <Glad/glad.h>
+
 namespace Voyager {
 	
-	void OpenGLMessageCallback(
-		unsigned source,
-		unsigned type,
-		unsigned id,
-		unsigned severity,
-		int length,
-		const char* message,
-		const void* userParam)
-	{
-		switch (severity)
-		{
-			case GL_DEBUG_SEVERITY_HIGH:         VG_CORE_CRITICAL(message); return;
-			case GL_DEBUG_SEVERITY_MEDIUM:       VG_CORE_ERROR(message); return;
-			case GL_DEBUG_SEVERITY_LOW:          VG_CORE_WARN(message); return;
-			case GL_DEBUG_SEVERITY_NOTIFICATION: VG_CORE_TRACE(message); return;
-		}
+	// void OpenGLMessageCallback(
+	// 	unsigned source,
+	// 	unsigned type,
+	// 	unsigned id,
+	// 	unsigned severity,
+	// 	int length,
+	// 	const char* message,
+	// 	const void* userParam)
+	// {
+	// 	switch (severity)
+	// 	{
+	// 		case GL_DEBUG_SEVERITY_HIGH:         VG_CORE_CRITICAL(message); return;
+	// 		case GL_DEBUG_SEVERITY_MEDIUM:       VG_CORE_ERROR(message); return;
+	// 		case GL_DEBUG_SEVERITY_LOW:          VG_CORE_WARN(message); return;
+	// 		case GL_DEBUG_SEVERITY_NOTIFICATION: VG_CORE_TRACE(message); return;
+	// 	}
 		
-		VG_CORE_ASSERT(false, "Unknown severity level!");
-	}
+	// 	VG_CORE_ASSERT(false, "Unknown severity level!");
+	// }
 
 	void OpenGLRendererAPI::Init()
 	{
@@ -51,12 +52,13 @@ namespace Voyager {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	// void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, int indexCount)
-	// {
-	// 	vertexArray->Bind();
-	// 	int count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
-	// 	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
-	// }
+	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
+	{
+		vertexArray->Bind();
+		/* If not specified use the entire index buffer */
+		int count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+	}
 
 	// void OpenGLRendererAPI::DrawLines(const Ref<VertexArray>& vertexArray, int vertexCount)
 	// {

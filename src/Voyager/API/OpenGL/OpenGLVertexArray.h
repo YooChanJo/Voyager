@@ -1,21 +1,27 @@
 #pragma once
-#include "OpenGLVertexBuffer.h"
-#include "OpenGLVertexBufferLayout.h"
+#include "Renderer/VertexArray.h"
 
 namespace Voyager {
-    
-    class OpenGLVertexArray {
-    private:
-        unsigned int m_RendererID;
-    public:
-        OpenGLVertexArray();
-        ~OpenGLVertexArray();
 
-        // called by the renderer --> needs context current
-        void Generate();
-        void AddBuffer(const OpenGLVertexBuffer& vb, const OpenGLVertexBufferLayout& layout) const;
-        void Bind() const;
-        void Unbind() const;
-    };
+	class OpenGLVertexArray : public VertexArray
+	{
+	public:
+		OpenGLVertexArray();
+		virtual ~OpenGLVertexArray();
+
+		virtual void Bind() const override;
+		virtual void Unbind() const override;
+
+		virtual void AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) override;
+		virtual void SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer) override;
+
+		inline virtual const std::vector<Ref<VertexBuffer>>& GetVertexBuffers() const { return m_VertexBuffers; }
+		inline virtual const Ref<IndexBuffer>& GetIndexBuffer() const { return m_IndexBuffer; }
+	private:
+		uint32_t m_RendererID;
+		uint32_t m_VertexBufferIndex = 0;
+		std::vector<Ref<VertexBuffer>> m_VertexBuffers;
+		Ref<IndexBuffer> m_IndexBuffer;
+	};
 
 }

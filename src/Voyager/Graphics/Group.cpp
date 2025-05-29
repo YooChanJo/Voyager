@@ -1,5 +1,5 @@
 #include "Group.h"
-#include "API/OpenGL/Renderers/Renderer2D.h"
+// #include "API/OpenGL/Renderers/Renderer2D.h"
 
 namespace Voyager {
     Group::Group(const glm::mat4& transform): m_TransformationMatrix(transform) {}
@@ -8,11 +8,11 @@ namespace Voyager {
     }
 
     void Group::Submit(Renderer2D* renderer) const {
-        renderer->Push(m_TransformationMatrix);
-        for(const auto& renderable: m_Renderables) {
-            renderable->Submit(renderer);
-        }
-        renderer->Pop();
+        // renderer->Push(m_TransformationMatrix);
+        // for(const auto& renderable: m_Renderables) {
+        //     renderable->Submit(renderer);
+        // }
+        // renderer->Pop();
     }
     
 }

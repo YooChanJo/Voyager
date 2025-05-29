@@ -1,11 +1,9 @@
 // #pragma once
-
-// #include <string>
-// #include <unordered_map>
-
+// #include "pch.h"
+// #include "Core/Base.h"
 // #include <glm/glm.hpp>
 
-// namespace Hazel {
+// namespace Voyager {
 
 // 	class Shader
 // 	{
@@ -32,8 +30,11 @@
 // 	class ShaderLibrary
 // 	{
 // 	public:
+//         /* Adding existing shaders */
 // 		void Add(const std::string& name, const Ref<Shader>& shader);
 // 		void Add(const Ref<Shader>& shader);
+
+//         /* Creating a new shader and adding */
 // 		Ref<Shader> Load(const std::string& filepath);
 // 		Ref<Shader> Load(const std::string& name, const std::string& filepath);
 
