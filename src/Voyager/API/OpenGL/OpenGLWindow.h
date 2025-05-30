@@ -40,7 +40,6 @@ namespace Voyager {
 
         void SetTitle(const std::string& title) override;
         void SetSize(int width, int height) override;
-    public:
         inline void* GetNativeWindow() const override { return (void*)m_Window; } // get native window pointer
     private:
 

@@ -29,6 +29,7 @@ namespace Voyager {
     /* Direct platform specification is held out in the application class */
     class Window {
         friend class Application;
+        friend class ImGuiLayer;
     private:
         LayerStack m_LayerStack;
     public:
@@ -59,7 +60,6 @@ namespace Voyager {
 
         virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
         virtual bool IsClosed() const = 0;
-    public: // back to private --> remove this line both from here and api
         virtual void* GetNativeWindow() const = 0;   
     public:
         /* Static functions */
