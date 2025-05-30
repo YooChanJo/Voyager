@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "Core/Assert.h"
+#include "Core/Base.h"
 
 namespace Voyager {
 

@@ -1,6 +1,5 @@
 // OpenGL
 #include <Glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <stb_image/stb_image.h>
 
 #include "OpenGLTexture.h"
@@ -16,7 +15,7 @@ namespace Voyager {
 
         if (!m_LocalBuffer) {
             VG_CORE_ERROR("Failed to load texture at path: {0}", filepath);
-        }        
+        }
     }
     OpenGLTexture::~OpenGLTexture() {
         if(m_RendererID != 0) glDeleteTextures(1, &m_RendererID);

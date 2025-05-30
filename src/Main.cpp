@@ -118,6 +118,7 @@ using namespace Voyager;
 // };
 
 #include "Renderer/Renderer.h"
+#include <imgui.h>
 
 #define APPLICATION_WINDOW (Application::Get().GetWindow())
 
@@ -140,14 +141,15 @@ public:
         m_VAO->Bind();
 
         float vertices[] = {
-            -0.5f, -0.5f,
-             0.5f, -0.5f,
-             0.5f,  0.5f,
-            -0.5f,  0.5f,
+            -0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 1.0f,
+             0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f,
+             0.5f,  0.5f, 1.0f, 0.0f, 1.0f, 1.0f,
+            -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f,
         };
         Ref<VertexBuffer> vertex_buffer = VertexBuffer::Create(vertices, sizeof(vertices));
         BufferLayout layout = {
-            { ShaderDataType::Float2, "a_Position" }
+            { ShaderDataType::Float2, "a_Position" },
+            { ShaderDataType::Float4, "a_Color" }
         };
         vertex_buffer->SetLayout(layout);
         m_VAO->AddVertexBuffer(vertex_buffer);
@@ -162,11 +164,16 @@ public:
 
         m_Renderer = CreateScope<Renderer>(); 
     }
+private:
+    bool m_ImGuiWindowOpen = true;
+public:
     void OnDetach() override {
         VG_CORE_WARN("Destroyed Basic Render Layer");
     }
     void OnImGuiRender() override {
-
+        if(m_ImGuiWindowOpen) {
+            ImGui::ShowDemoWindow(&m_ImGuiWindowOpen);
+        }
     }
     void OnUpdate() override {
         m_Renderer->BeginScene();

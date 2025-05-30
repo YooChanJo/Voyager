@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Input.h"
+#include "Log.h"
 
 namespace Voyager {
 #define BIND_EVENT_FN(Func) std::bind(&Application::Func, this, std::placeholders::_1)

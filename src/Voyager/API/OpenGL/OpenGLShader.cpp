@@ -1,6 +1,7 @@
 #include "OpenGLShader.h"
 
 #include "Core/Assert.h"
+#include "Core/Log.h"
 #include "Core/Timer.h"
 
 #include <Glad/glad.h>
