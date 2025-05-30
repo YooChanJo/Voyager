@@ -5,11 +5,11 @@
 using namespace Voyager;
 
 // #include "Voyager/API/OpenGL/Renderers/BatchRenderer2D.h"
-#include "Voyager/Graphics/Sprite.h"
-#include "Voyager/Graphics/Group.h"
+// #include "Voyager/Graphics/Sprite.h"
+// #include "Voyager/Graphics/Group.h"
 
-#include "Voyager/Core/Input.h"
-#include <imgui.h>
+// #include "Voyager/Core/Input.h"
+// #include <imgui.h>
 
 // class TestLayer : public Layer {
 // private:
@@ -117,12 +117,75 @@ using namespace Voyager;
 //     }
 // };
 
+#include "Renderer/Renderer.h"
+
+#define APPLICATION_WINDOW (Application::Get().GetWindow())
+
+class BasicRenderLayer: public Layer {
+private:
+    Ref<VertexArray> m_VAO;
+    Ref<Shader> m_Shader;
+    glm::mat4 m_Transform;
+    Scope<Renderer> m_Renderer;
+
+public:
+    BasicRenderLayer(): Layer("Basic Render Layer") {
+        VG_CORE_WARN("Basic Render Layer created");
+    }
+    ~BasicRenderLayer() {}
+    
+    void OnAttach() override {
+        RenderCommand::SetViewport(0, 0, APPLICATION_WINDOW->GetWidth(), APPLICATION_WINDOW->GetHeight());
+        m_VAO = VertexArray::Create();
+        m_VAO->Bind();
+
+        float vertices[] = {
+            -0.5f, -0.5f,
+             0.5f, -0.5f,
+             0.5f,  0.5f,
+            -0.5f,  0.5f,
+        };
+        Ref<VertexBuffer> vertex_buffer = VertexBuffer::Create(vertices, sizeof(vertices));
+        BufferLayout layout = {
+            { ShaderDataType::Float2, "a_Position" }
+        };
+        vertex_buffer->SetLayout(layout);
+        m_VAO->AddVertexBuffer(vertex_buffer);
+
+        uint32_t indices[] = { 0, 1, 2, 2, 3, 0 };
+        m_VAO->SetIndexBuffer(IndexBuffer::Create(indices, 6));
+
+        m_VAO->Unbind();
+
+        m_Transform = glm::mat4(1.0f); // the identity matrix
+        m_Shader = Shader::Create("shaders/square.shader");
+
+        m_Renderer = CreateScope<Renderer>(); 
+    }
+    void OnDetach() override {
+        VG_CORE_WARN("Destroyed Basic Render Layer");
+    }
+    void OnImGuiRender() override {
+
+    }
+    void OnUpdate() override {
+        m_Renderer->BeginScene();
+        m_Renderer->Submit(m_Shader, m_VAO, m_Transform);
+        m_Renderer->EndScene();
+    }
+    void OnEvent(const EventPtr& event) override {
+
+    }
+};
+
+
 class TestApplication : public Application {
 public:
     TestApplication()
         : Application(GraphicsAPI::OpenGL)
     {
         // GetWindow()->PushLayer(CreateScope<TestLayer>());
+        GetWindow()->PushLayer(CreateScope<BasicRenderLayer>());
     }
     virtual ~TestApplication() {
 

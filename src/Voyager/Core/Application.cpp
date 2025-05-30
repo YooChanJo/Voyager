@@ -60,8 +60,8 @@ namespace Voyager {
         m_Running = true;
 
         while(!m_Window->IsClosed()) {
+            RenderCommand::Clear();
             // main thread queue execution
-
             // layer handling
             {
                 for (Scope<Layer>& layer : m_Window->m_LayerStack) layer->OnUpdate();

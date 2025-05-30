@@ -5,8 +5,7 @@
 
 namespace Voyager {
 
-	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
-	{
+	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) {
 		switch (type)
 		{
 			case ShaderDataType::Float:    return GL_FLOAT;
@@ -26,28 +25,23 @@ namespace Voyager {
 		return 0;
 	}
 
-	OpenGLVertexArray::OpenGLVertexArray()
-	{
+	OpenGLVertexArray::OpenGLVertexArray() {
 		glCreateVertexArrays(1, &m_RendererID);
 	}
 
-	OpenGLVertexArray::~OpenGLVertexArray()
-	{
+	OpenGLVertexArray::~OpenGLVertexArray() {
 		glDeleteVertexArrays(1, &m_RendererID);
 	}
 
-	void OpenGLVertexArray::Bind() const
-	{
+	void OpenGLVertexArray::Bind() const {
 		glBindVertexArray(m_RendererID);
 	}
 
-	void OpenGLVertexArray::Unbind() const
-	{
+	void OpenGLVertexArray::Unbind() const {
 		glBindVertexArray(0);
 	}
 
-	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
-	{
+	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) {
 		VG_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
 		glBindVertexArray(m_RendererID);
@@ -114,8 +108,7 @@ namespace Voyager {
 		m_VertexBuffers.push_back(vertexBuffer);
 	}
 
-	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
-	{
+	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer) {
 		glBindVertexArray(m_RendererID);
 		indexBuffer->Bind();
 		m_IndexBuffer = indexBuffer;

@@ -55,8 +55,8 @@ namespace Voyager {
     private:
         bool Init();
         void ShutDown() const;
-        inline void MakeWindowContextCurrent() const { glfwMakeContextCurrent(m_Window); } // make the window context current
-        inline void FreeWindowContextCurrent() const { glfwMakeContextCurrent(nullptr); } // make the window context current
+        // inline void MakeWindowContextCurrent() const { glfwMakeContextCurrent(m_Window); } // make the window context current
+        // inline void FreeWindowContextCurrent() const { glfwMakeContextCurrent(nullptr); } // make the window context current
     };
 
 }
