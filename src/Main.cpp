@@ -117,6 +117,7 @@ using namespace Voyager;
 //     }
 // };
 
+#include "Renderer/OrthographicCamera.h"
 #include "Renderer/Renderer.h"
 #include <imgui.h>
 
@@ -127,8 +128,8 @@ private:
     Ref<VertexArray> m_VAO;
     Ref<Shader> m_Shader;
     glm::mat4 m_Transform;
-    Scope<Renderer> m_Renderer;
 
+    Scope<OrthographicCamera> m_Camera;
 public:
     BasicRenderLayer(): Layer("Basic Render Layer") {
         VG_CORE_WARN("Basic Render Layer created");
@@ -141,10 +142,10 @@ public:
         m_VAO->Bind();
 
         float vertices[] = {
-            -0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 1.0f,
-             0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f,
-             0.5f,  0.5f, 1.0f, 0.0f, 1.0f, 1.0f,
-            -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, 1.0f,
+             4.0f, 3.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+            12.0f, 3.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+            12.0f, 6.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+             4.0f, 6.0f, 1.0f, 1.0f, 1.0f, 1.0f,
         };
         Ref<VertexBuffer> vertex_buffer = VertexBuffer::Create(vertices, sizeof(vertices));
         BufferLayout layout = {
@@ -162,7 +163,7 @@ public:
         m_Transform = glm::mat4(1.0f); // the identity matrix
         m_Shader = Shader::Create("shaders/square.shader");
 
-        m_Renderer = CreateScope<Renderer>(); 
+        m_Camera = CreateScope<OrthographicCamera>(0.0f, 16.0f, 0.0f, 9.0f);
     }
 private:
     bool m_ImGuiWindowOpen = true;
@@ -176,9 +177,9 @@ public:
         }
     }
     void OnUpdate() override {
-        m_Renderer->BeginScene();
-        m_Renderer->Submit(m_Shader, m_VAO, m_Transform);
-        m_Renderer->EndScene();
+        Renderer::BeginScene(*m_Camera);
+        Renderer::Submit(m_Shader, m_VAO, m_Transform);
+        Renderer::EndScene();
     }
     void OnEvent(const EventPtr& event) override {
 
