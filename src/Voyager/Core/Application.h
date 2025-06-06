@@ -5,6 +5,8 @@
 #include "Events/ApplicationEvent.h"
 #include "ImGuiLayer.h"
 #include "Window.h"
+#include "Timer.h"
+#include "Timestep.h"
 #include "GraphicsAPI.h"
 
 #include "Renderer/RenderCommand.h"
@@ -57,6 +59,11 @@ namespace Voyager {
         void OnEvent(const EventPtr& e);
     private:
         bool m_Running = false;
+
+        Timer m_Timer;
+        Timestep m_Timestep; // for deltatime purpose
+        float m_LastFrameTime = 0.0f; // tracks last frame time
+
         Scope<Window> m_Window;
         Scope<ImGuiLayer> m_ImGuiLayer; // the highest overlay handled with priority
         // ApplicationSpecification m_Specification;

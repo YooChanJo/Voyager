@@ -9,13 +9,13 @@ namespace Voyager {
         m_Start = std::chrono::steady_clock::now();
     }
 
-    double Timer::Elapsed() {
+    float Timer::Elapsed() {
         auto current = std::chrono::steady_clock::now();
-        std::chrono::duration<double> elapsed = current - m_Start;
+        std::chrono::duration<float> elapsed = current - m_Start;
         return elapsed.count(); // returns seconds as double
     }
 
-    double Timer::ElapsedMillis() {
-        return Elapsed() * 1000.0;
+    float Timer::ElapsedMillis() {
+        return Elapsed() * 1000.0f;
     }
 }

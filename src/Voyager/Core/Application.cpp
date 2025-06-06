@@ -59,13 +59,19 @@ namespace Voyager {
 
     void Application::Run() {
         m_Running = true;
-
+        m_Timer.Reset();
+        m_LastFrameTime = 0.0f;
         while(!m_Window->IsClosed()) {
+            /* Calculating delta time --> stored in m_Timestep */
+            float time = m_Timer.Elapsed(); // elapsed in seconds
+            m_Timestep = time - m_LastFrameTime;
+            m_LastFrameTime = time;
+
             RenderCommand::Clear();
             // main thread queue execution
             // layer handling
             {
-                for (Scope<Layer>& layer : m_Window->m_LayerStack) layer->OnUpdate();
+                for (Scope<Layer>& layer : m_Window->m_LayerStack) layer->OnUpdate(m_Timestep);
                 // imgui onupdate is empty
             }
             // imgui rendering

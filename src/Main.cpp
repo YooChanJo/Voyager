@@ -120,6 +120,9 @@ using namespace Voyager;
 #include "Renderer/OrthographicCamera.h"
 #include "Renderer/Renderer.h"
 #include <imgui.h>
+#include "Events/Event.h"
+#include "Events/KeyEvent.h"
+#include "Core/KeyCodes.h"
 
 #define APPLICATION_WINDOW (Application::Get().GetWindow())
 
@@ -142,10 +145,10 @@ public:
         m_VAO->Bind();
 
         float vertices[] = {
-             4.0f, 3.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-            12.0f, 3.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-            12.0f, 6.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-             4.0f, 6.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+            -8.0f, -4.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+             8.0f, -4.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+             8.0f,  4.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+            -8.0f,  4.0f, 1.0f, 1.0f, 1.0f, 1.0f,
         };
         Ref<VertexBuffer> vertex_buffer = VertexBuffer::Create(vertices, sizeof(vertices));
         BufferLayout layout = {
@@ -163,7 +166,7 @@ public:
         m_Transform = glm::mat4(1.0f); // the identity matrix
         m_Shader = Shader::Create("shaders/square.shader");
 
-        m_Camera = CreateScope<OrthographicCamera>(0.0f, 16.0f, 0.0f, 9.0f);
+        m_Camera = CreateScope<OrthographicCamera>(-16.0f, 16.0f, -9.0f, 9.0f);
     }
 private:
     bool m_ImGuiWindowOpen = true;
@@ -176,14 +179,13 @@ public:
             ImGui::ShowDemoWindow(&m_ImGuiWindowOpen);
         }
     }
-    void OnUpdate() override {
+    void OnUpdate(Timestep ts) override {
+        VG_CORE_TRACE("FPS: {0}", 1 / (ts.GetSeconds()));
         Renderer::BeginScene(*m_Camera);
         Renderer::Submit(m_Shader, m_VAO, m_Transform);
         Renderer::EndScene();
     }
-    void OnEvent(const EventPtr& event) override {
-
-    }
+    void OnEvent(const EventPtr& event) override {}
 };
 
 

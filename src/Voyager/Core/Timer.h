@@ -9,7 +9,7 @@ namespace Voyager {
         Timer();
 
         void Reset();
-        double Elapsed(); // seconds
-        double ElapsedMillis(); // millies
+        float Elapsed(); // seconds
+        float ElapsedMillis(); // millies
     };
 }
