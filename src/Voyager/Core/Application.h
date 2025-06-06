@@ -49,6 +49,7 @@ namespace Voyager {
 
         void Run();
 
+        inline Timestep GetTimestep() const { return m_Timestep; }
         inline Scope<Window>& GetWindow() { return m_Window; } // get the window at index
         inline static GraphicsAPI GetAPI() { return RenderCommand::s_API; }
         inline static Application& Get() { return *s_Instance; } // get the instance of the app

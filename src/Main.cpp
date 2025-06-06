@@ -117,7 +117,7 @@ using namespace Voyager;
 //     }
 // };
 
-#include "Renderer/OrthographicCamera.h"
+#include "Renderer/OrthographicCameraController.h"
 #include "Renderer/Renderer.h"
 #include <imgui.h>
 #include "Events/Event.h"
@@ -125,6 +125,7 @@ using namespace Voyager;
 #include "Core/KeyCodes.h"
 
 #define APPLICATION_WINDOW (Application::Get().GetWindow())
+#define APPLICATION_TIMESTEP (Application::Get().GetTimestep())
 
 class BasicRenderLayer: public Layer {
 private:
@@ -132,7 +133,7 @@ private:
     Ref<Shader> m_Shader;
     glm::mat4 m_Transform;
 
-    Scope<OrthographicCamera> m_Camera;
+    Scope<OrthographicCameraController> m_CameraController;
 public:
     BasicRenderLayer(): Layer("Basic Render Layer") {
         VG_CORE_WARN("Basic Render Layer created");
@@ -166,10 +167,13 @@ public:
         m_Transform = glm::mat4(1.0f); // the identity matrix
         m_Shader = Shader::Create("shaders/square.shader");
 
-        m_Camera = CreateScope<OrthographicCamera>(-16.0f, 16.0f, -9.0f, 9.0f);
+        m_CameraController = CreateScope<OrthographicCameraController>(16.0f / 9.0f, true);
     }
 private:
     bool m_ImGuiWindowOpen = true;
+    bool m_FPSWindowOpen = true;
+    int cnt = 0;
+    std::string m_FPS;
 public:
     void OnDetach() override {
         VG_CORE_WARN("Destroyed Basic Render Layer");
@@ -178,14 +182,33 @@ public:
         if(m_ImGuiWindowOpen) {
             ImGui::ShowDemoWindow(&m_ImGuiWindowOpen);
         }
+        {
+            cnt++;
+            if(cnt % 100 == 0) {
+                int fps = (int)(1.0f / APPLICATION_TIMESTEP);
+                std::stringstream ss;
+                ss << "FPS: " << fps;
+                m_FPS = ss.str();
+                cnt = 0;
+            }
+            if(m_FPSWindowOpen) {
+                ImGui::Begin("FPS window", &m_FPSWindowOpen);
+                ImGui::Text(m_FPS.c_str());
+                ImGui::End();
+            }
+        }
+
     }
-    void OnUpdate(Timestep ts) override {
-        VG_CORE_TRACE("FPS: {0}", 1 / (ts.GetSeconds()));
-        Renderer::BeginScene(*m_Camera);
+    void OnUpdate() override {
+        Renderer::BeginScene(m_CameraController->GetCamera());
         Renderer::Submit(m_Shader, m_VAO, m_Transform);
         Renderer::EndScene();
+
+        m_CameraController->OnUpdate(APPLICATION_TIMESTEP);
     }
-    void OnEvent(const EventPtr& event) override {}
+    void OnEvent(const EventPtr& event) override {
+        m_CameraController->OnEvent(event);
+    }
 };
 
 

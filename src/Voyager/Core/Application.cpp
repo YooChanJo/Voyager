@@ -3,7 +3,7 @@
 #include "Log.h"
 
 namespace Voyager {
-#define BIND_EVENT_FN(Func) std::bind(&Application::Func, this, std::placeholders::_1)
+#define BIND_APPLICATION_EVENT_FN(Func) std::bind(&Application::Func, this, std::placeholders::_1)
     
     Application::Application(/* const ApplicationSpecification& specification,  */GraphicsAPI api) {
         VG_CORE_ASSERT(!s_Instance, "Application already exists!");
@@ -13,7 +13,7 @@ namespace Voyager {
         switch(api) {
 			case GraphicsAPI::OpenGL: {
                 m_Window = Window::Create<GraphicsAPI::OpenGL>();
-                m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+                m_Window->SetEventCallback(BIND_APPLICATION_EVENT_FN(OnEvent));
 
                 m_ImGuiLayer = CreateScope<ImGuiLayer>(); // replace with api specific
                 m_ImGuiLayer->OnAttach();
@@ -45,8 +45,8 @@ namespace Voyager {
         EventDispatcher dispatcher(e);
 
         /* Application level events */
-        dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-        dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
+        dispatcher.Dispatch<WindowCloseEvent>(BIND_APPLICATION_EVENT_FN(OnWindowClose));
+        dispatcher.Dispatch<WindowResizeEvent>(BIND_APPLICATION_EVENT_FN(OnWindowResize));
 
         m_ImGuiLayer->OnEvent(e);
         if(e->GetHandled()) return;
@@ -71,7 +71,7 @@ namespace Voyager {
             // main thread queue execution
             // layer handling
             {
-                for (Scope<Layer>& layer : m_Window->m_LayerStack) layer->OnUpdate(m_Timestep);
+                for (Scope<Layer>& layer : m_Window->m_LayerStack) layer->OnUpdate();
                 // imgui onupdate is empty
             }
             // imgui rendering
