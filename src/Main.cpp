@@ -1,9 +1,9 @@
 #define USE_ENTRY_POINT 1
 #if USE_ENTRY_POINT
 #include "Voyager/Core/EntryPoint.h"
-
 using namespace Voyager;
 
+#if 0
 // #include "Voyager/API/OpenGL/Renderers/BatchRenderer2D.h"
 // #include "Voyager/Graphics/Sprite.h"
 // #include "Voyager/Graphics/Group.h"
@@ -116,6 +116,7 @@ using namespace Voyager;
 //         });
 //     }
 // };
+#endif
 
 #include "Renderer/OrthographicCameraController.h"
 #include "Renderer/Renderer.h"
@@ -131,7 +132,6 @@ class BasicRenderLayer: public Layer {
 private:
     Ref<VertexArray> m_VAO;
     Ref<Shader> m_Shader;
-    glm::mat4 m_Transform;
 
     Scope<OrthographicCameraController> m_CameraController;
 public:
@@ -146,15 +146,16 @@ public:
         m_VAO->Bind();
 
         float vertices[] = {
-            -8.0f, -4.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-             8.0f, -4.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-             8.0f,  4.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-            -8.0f,  4.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+            0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+            0.8f, 0.0f, 0.0f, 1.0f, 0.0f,
+            0.8f, 0.8f, 0.0f, 0.0f, 1.0f,
+            0.0f, 0.8f, 1.0f, 1.0f, 1.0f,
         };
+
         Ref<VertexBuffer> vertex_buffer = VertexBuffer::Create(vertices, sizeof(vertices));
         BufferLayout layout = {
             { ShaderDataType::Float2, "a_Position" },
-            { ShaderDataType::Float4, "a_Color" }
+            { ShaderDataType::Float3, "a_Color" }
         };
         vertex_buffer->SetLayout(layout);
         m_VAO->AddVertexBuffer(vertex_buffer);
@@ -164,10 +165,9 @@ public:
 
         m_VAO->Unbind();
 
-        m_Transform = glm::mat4(1.0f); // the identity matrix
         m_Shader = Shader::Create("shaders/square.shader");
 
-        m_CameraController = CreateScope<OrthographicCameraController>(16.0f / 9.0f, true);
+        m_CameraController = CreateScope<OrthographicCameraController>(16.0f / 9.0f, false, true);
     }
 private:
     bool m_ImGuiWindowOpen = true;
@@ -201,10 +201,12 @@ public:
     }
     void OnUpdate() override {
         Renderer::BeginScene(m_CameraController->GetCamera());
-        Renderer::Submit(m_Shader, m_VAO, m_Transform);
+        for(float i = 0.0f; i < 10.0f; i++) for(int j = 0; j < 10.0f; j++) {
+            Renderer::Submit(m_Shader, m_VAO, glm::translate(glm::mat4(1.0f), glm::vec3(i, j, 0)));
+        }
         Renderer::EndScene();
 
-        m_CameraController->OnUpdate(APPLICATION_TIMESTEP);
+        m_CameraController->OnUpdate();
     }
     void OnEvent(const EventPtr& event) override {
         m_CameraController->OnEvent(event);
