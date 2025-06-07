@@ -15,7 +15,7 @@ namespace Voyager {
 		virtual ~Camera() = default;
 
 		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
-		inline const glm::mat4& GetViewionMatrix() const { return m_ViewMatrix; }
+		inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
 		inline const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
 	protected:
 		glm::mat4 m_ProjectionMatrix;

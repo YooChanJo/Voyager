@@ -167,7 +167,7 @@ public:
 
         m_Shader = Shader::Create("shaders/square.shader");
 
-        m_CameraController = CreateScope<OrthographicCameraController>(16.0f / 9.0f, false, true);
+        m_CameraController = CreateScope<OrthographicCameraController>(16.0f / 9.0f, OrthographicCameraControllerOptions(true, true));
     }
 private:
     bool m_ImGuiWindowOpen = true;

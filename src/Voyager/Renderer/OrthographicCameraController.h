@@ -7,10 +7,26 @@
 
 namespace Voyager {
 
+	struct OrthographicCameraControllerOptions {
+		bool EnableRotation;
+		bool MouseCenteredZoom;
+		bool MouseOnly;
+
+		/* Might want to add key control options */
+		
+		/* TODO: Change this manual bool input into a flag system */
+		OrthographicCameraControllerOptions(
+			bool enableRotation = false,
+			bool mouseCenteredZoom = false,
+			bool mouseOnly = false
+		) : EnableRotation(enableRotation), MouseCenteredZoom(mouseCenteredZoom), MouseOnly(mouseOnly)
+		{}
+	};
+
 	class OrthographicCameraController
 	{
 	public:
-		OrthographicCameraController(float aspectRatio, bool mouseOnly = false, bool rotation = false);
+		OrthographicCameraController(float aspectRatio, OrthographicCameraControllerOptions options = OrthographicCameraControllerOptions());
 
 		void OnUpdate();
 		void OnEvent(const EventPtr& e);
@@ -25,17 +41,18 @@ namespace Voyager {
 	private:
 		bool OnMouseScrolled(const MouseScrolledEventPtr& e);
 		bool OnWindowResized(const WindowResizeEventPtr& e);
+
+		glm::vec3 ScreenToNDC(const glm::vec2& screenCoord);
 	private:
 		float m_AspectRatio;
 		float m_ZoomLevel = 1.0f;
 		OrthographicCamera m_Camera;
 
-		bool m_Rotation;
-		bool m_MouseOnly;
+		OrthographicCameraControllerOptions  m_Options;
 
 		glm::vec2 m_LastMousePosition;
+		/* To only handle events when event is passed on */
 		bool m_FocusByMousePressed = false;
-
 		bool m_FocusByKeyPressed = false;
 
 		glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 0.0f };

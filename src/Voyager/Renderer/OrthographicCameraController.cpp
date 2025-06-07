@@ -10,14 +10,14 @@ namespace Voyager {
 #define APPLICATION_TIMESTEP Application::Get().GetTimestep()
 #define APPLICATION_WINDOW Application::Get().GetWindow()
 
-	OrthographicCameraController::OrthographicCameraController(float aspectRatio, bool mouseOnly, bool rotation)
-		: m_AspectRatio(aspectRatio), m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel), m_Rotation(rotation), m_MouseOnly(mouseOnly)
+	OrthographicCameraController::OrthographicCameraController(float aspectRatio, OrthographicCameraControllerOptions options)
+		: m_AspectRatio(aspectRatio), m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel), m_Options(options)
 	{
 		m_LastMousePosition = { Input::GetMouseX(), Input::GetMouseY() };
 	}
 
 	void OrthographicCameraController::OnUpdate() {
-		if(!m_MouseOnly && m_FocusByKeyPressed) {
+		if(!m_Options.MouseOnly && m_FocusByKeyPressed) {
 			/* Todo: Add control over which keys to assign */
 			if (Input::IsKeyPressed(Key::A)) {
 				m_CameraPosition.x -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * APPLICATION_TIMESTEP;
@@ -35,7 +35,7 @@ namespace Voyager {
 				m_CameraPosition.y -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * APPLICATION_TIMESTEP;
 			}
 
-			if (m_Rotation) {
+			if (m_Options.EnableRotation) {
 				if (Input::IsKeyPressed(Key::Q)) m_CameraRotation += m_CameraRotationSpeed * APPLICATION_TIMESTEP;
 				if (Input::IsKeyPressed(Key::E)) m_CameraRotation -= m_CameraRotationSpeed * APPLICATION_TIMESTEP;
 
@@ -51,11 +51,9 @@ namespace Voyager {
 		glm::vec2 currentMousePos = Input::GetMousePosition();
 
 		if(Input::IsMouseButtonPressed(Mouse::ButtonLeft) && m_FocusByMousePressed) {
-			float xOffset = (currentMousePos.x - m_LastMousePosition.x) / APPLICATION_WINDOW->GetWidth() * 2 * m_AspectRatio;
-			float yOffset = (m_LastMousePosition.y - currentMousePos.y) / APPLICATION_WINDOW->GetHeight() * 2; // y coordinate flipped
-			
-			m_CameraPosition.x -= m_CameraTranslationSpeed * (xOffset * cos(glm::radians(m_CameraRotation)) - yOffset * sin(glm::radians(m_CameraRotation)));
-			m_CameraPosition.y -= m_CameraTranslationSpeed * (xOffset * sin(glm::radians(m_CameraRotation)) + yOffset * cos(glm::radians(m_CameraRotation)));
+			glm::vec3 offset = ScreenToNDC(currentMousePos) - ScreenToNDC(m_LastMousePosition);
+
+			m_CameraPosition -= offset;
 
 			m_Camera.SetPosition(m_CameraPosition);
 		}
@@ -102,15 +100,51 @@ namespace Voyager {
 
     /* Change this into a more sophicsticated mouse controller */
 	bool OrthographicCameraController::OnMouseScrolled(const MouseScrolledEventPtr& e) {
-		m_ZoomLevel -= e->GetYOffset() * 0.25f;
-		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
-		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+		if(m_Options.MouseCenteredZoom) {
+			/* Store original zoom level */
+			float lastZoomLevel = m_ZoomLevel;
+			
+			/* New zoom level */
+			m_ZoomLevel -= e->GetYOffset() * 0.25f;
+			m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
+
+			/* Change of projectioni matrix */
+			m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+
+			/* Get NDC */
+			glm::vec3 mouseNDC = ScreenToNDC(Input::GetMousePosition());
+
+			/* Change of camera position */
+			m_CameraPosition += (m_CameraPosition - mouseNDC) * (m_ZoomLevel / lastZoomLevel - 1.0f);
+
+			m_Camera.SetPosition(m_CameraPosition);
+		} else {
+			m_ZoomLevel -= e->GetYOffset() * 0.25f;
+			m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
+
+			m_Camera.SetProjection(
+				-m_AspectRatio * m_ZoomLevel,
+				m_AspectRatio * m_ZoomLevel,
+				-m_ZoomLevel,
+				m_ZoomLevel
+			);
+		}
 		return false;
 	}
 
 	bool OrthographicCameraController::OnWindowResized(const WindowResizeEventPtr& e) {
 		OnResize((float)e->GetWidth(), (float)e->GetHeight());
 		return false;
+	}
+
+	glm::vec3 OrthographicCameraController::ScreenToNDC(const glm::vec2& screenCoord) {
+		glm::vec4 rawNDC = glm::inverse(m_Camera.GetViewProjectionMatrix()) * glm::vec4(
+			screenCoord.x / APPLICATION_WINDOW->GetWidth() * 2 - 1.0f,
+			(1.0f - screenCoord.y / APPLICATION_WINDOW->GetHeight()) * 2 - 1.0f,
+			0.0f,
+			1.0f
+		);
+		return { rawNDC.x, rawNDC.y, 0.0f };
 	}
 
 }
